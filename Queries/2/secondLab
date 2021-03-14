@@ -1,0 +1,263 @@
+CLEAR SCREEN;
+--Выборка данных
+--1. Вывести товары, упорядочив в алфавитном порядке по наименованию и в
+--обратном порядке по приоритету.
+    SELECT NAME, PRIORITY
+    FROM GOODS
+    ORDER BY NAME, PRIORITY DESC
+
+--2. Посчитать количество товаров в заявках за заданную дату. 
+    SELECT SUM(GOOD_COUNT)
+    FROM SALES
+    WHERE CREATE_DATE = '01-02-2021'
+    
+--3. Вывести все заявки на товары с приоритетом меньше заданного.
+    SELECT GOODS.NAME, SALES.GOOD_COUNT, GOODS.PRIORITY, SALES.CREATE_DATE
+    FROM SALES
+    JOIN GOODS ON SALES.GOOD_ID = GOODS.ID
+    WHERE GOODS.PRIORITY < 50
+    
+    SELECT GOODS.NAME, SALES.GOOD_COUNT, GOODS.PRIORITY, SALES.CREATE_DATE
+    FROM SALES, GOODS
+    WHERE SALES.GOOD_ID IN
+    (
+        SELECT ID
+        FROM GOODS
+        WHERE PRIORITY < 50
+    ) AND SALES.GOOD_ID = GOODS.ID
+    
+--4. Вывести наименования на товары, отсутствующие на «складе 1».
+    SELECT NAME
+    FROM GOODS
+    WHERE NOT EXISTS
+    (
+        SELECT ID
+        FROM WAREHOUSE1
+        WHERE GOOD_ID = GOODS.ID
+    )
+    
+--5. Вывести заявки и наименования товаров, включая товары, на которые не было заявок.
+    SELECT GOODS.NAME, SALES.GOOD_COUNT
+    FROM GOODS
+    LEFT JOIN SALES ON GOODS.ID = SALES.GOOD_ID
+
+--6. Вывести количество товаров, на которые не было заявок за заданную дату.
+    SELECT COUNT(DISTINCT NAME) AS COUNT
+    FROM GOODS
+    JOIN SALES ON GOODS.ID = SALES.GOOD_ID
+    WHERE SALES.CREATE_DATE <> '01-02-2021'
+
+--7. Вывести суммарное количество заданного товара на первом и втором складах.
+    SELECT GOODS.NAME, COALESCE (WAREHOUSE1.GOOD_COUNT, 0) +
+    COALESCE (WAREHOUSE2.GOOD_COUNT, 0) AS COUNT
+    FROM GOODS
+    LEFT JOIN WAREHOUSE1 ON GOODS.ID = WAREHOUSE1.GOOD_ID
+    LEFT JOIN WAREHOUSE2 ON GOODS.ID = WAREHOUSE2.GOOD_ID
+
+--8. Пять самых популярных товаров за заданный промежуток времени,
+--упорядочив в порядке уменьшения спроса.
+    SELECT *
+    FROM
+    (
+        SELECT GOODS.NAME, SUM(SALES.GOOD_COUNT) AS TOTAL
+        FROM SALES
+        JOIN GOODS ON SALES.GOOD_ID = GOODS.ID
+        WHERE SALES.CREATE_DATE
+        BETWEEN '01-01-19' AND '04-04-22'
+        GROUP BY GOODS.NAME
+        ORDER BY TOTAL DESC
+    )
+    WHERE ROWNUM <= 5
+    
+--Вставка данных
+--1. Добавить новый товар.
+    INSERT INTO GOODS(NAME, PRIORITY)
+    VALUES('TEST', 25)
+    
+--2. Добавить заявку на товар из п.1.
+    INSERT INTO SALES(GOOD_ID, GOOD_COUNT, CREATE_DATE)
+    VALUES(
+    (
+        SELECT ID
+        FROM GOODS
+        WHERE NAME = 'TEST'
+    )
+    , 432, '04-04-2021')
+    
+--3. Добавить в рамках транзакции новый товар и некоторое количество его завести
+--на «склад 2» и «склад 1». В случае, если суммарное число товаров на «складе 1»
+--превышает некоторую заданную величину – транзакцию откатить.
+    DECLARE 
+        WAREHOUSE1_COUNT NUMBER;
+        WAREHOUSE2_COUNT NUMBER;
+        MAX_COUNT NUMBER := 5000;
+            
+    BEGIN
+        INSERT INTO GOODS(NAME, PRIORITY)
+        VALUES('tmp', 59);
+        
+        INSERT INTO WAREHOUSE1(GOOD_ID, GOOD_COUNT)
+        SELECT ID, 7777
+        FROM GOODS
+        WHERE NAME = 'tmp';
+        
+        INSERT INTO WAREHOUSE2(GOOD_ID, GOOD_COUNT)
+        SELECT ID, 9999
+        FROM GOODS
+        WHERE NAME = 'tmp';
+
+        BEGIN
+            SELECT GOOD_COUNT
+            INTO WAREHOUSE1_COUNT
+            FROM WAREHOUSE1
+            JOIN GOODS ON WAREHOUSE1.GOOD_ID = GOODS.ID
+            WHERE GOODS.NAME = 'tmp';
+        END;
+        
+        BEGIN
+            SELECT GOOD_COUNT
+            INTO WAREHOUSE2_COUNT
+            FROM WAREHOUSE2
+            JOIN GOODS ON WAREHOUSE2.GOOD_ID = GOODS.ID
+            WHERE GOODS.NAME = 'tmp';
+        END;
+        
+        
+        IF WAREHOUSE1_COUNT + WAREHOUSE2_COUNT > MAX_COUNT
+        THEN
+            DBMS_OUTPUT.PUT_LINE('Aborted');
+            ROLLBACK;
+        ELSE
+            DBMS_OUTPUT.PUT_LINE('Accepted');
+            COMMIT;
+        END IF;
+    END;
+    
+--Удаление данных  
+--1. Удалить товар и заявки на него.
+    DECLARE 
+        GOOD_ID_FOR_DELETE NUMBER;
+    
+    BEGIN
+        SELECT ID
+        INTO GOOD_ID_FOR_DELETE
+        FROM GOODS
+        WHERE NAME = 'TEST1';
+    
+        DELETE FROM SALES
+        WHERE GOOD_ID = GOOD_ID_FOR_DELETE;
+        
+        DELETE FROM GOODS
+        WHERE ID = GOOD_ID_FOR_DELETE;
+    END;
+
+--2. Удалить в рамках транзакции товар со «склада 1» с наименьшим приоритетом.
+--то же, что и п.1, но транзакцию откатить.
+    DECLARE 
+        GOOD_ID_FOR_DELETE NUMBER;
+        
+    BEGIN
+        BEGIN
+            SELECT ID
+            INTO GOOD_ID_FOR_DELETE
+            FROM GOODS
+            WHERE PRIORITY =
+            (
+                SELECT MIN(PRIORITY)
+                FROM GOODS
+            );
+        END;
+        
+        DELETE FROM WAREHOUSE1
+        WHERE GOOD_ID = GOOD_ID_FOR_DELETE;
+    
+        COMMIT;
+        --ROLLBACK;
+    END;
+
+--Модификация данных
+--1. Списать 5 единиц заданного товара со «склада 1». Если количество товара
+--на этом складе меньше 5, недостающее число списать со второго склада.
+    DECLARE 
+        GOOD_NAME VARCHAR2(50 BYTE) := 'Milk';
+        GOOD_ID_FOR_UPDATE NUMBER;
+        WAREHOUSE1_COUNT NUMBER;
+        WAREHOUSE2_COUNT NUMBER;
+        NUMBER_OF_GOODS NUMBER := 5;
+        
+    BEGIN
+        BEGIN
+            SELECT ID
+            INTO GOOD_ID_FOR_UPDATE
+            FROM GOODS
+            WHERE NAME = GOOD_NAME;
+        END;
+        
+        BEGIN
+            SELECT GOOD_COUNT
+            INTO WAREHOUSE1_COUNT
+            FROM WAREHOUSE1
+            WHERE GOOD_ID = GOOD_ID_FOR_UPDATE;
+        END;
+        
+        BEGIN
+            SELECT GOOD_COUNT
+            INTO WAREHOUSE2_COUNT
+            FROM WAREHOUSE2
+            WHERE GOOD_ID = GOOD_ID_FOR_UPDATE;
+        END;
+        
+        IF WAREHOUSE1_COUNT >= NUMBER_OF_GOODS
+        THEN
+            UPDATE WAREHOUSE1
+            SET WAREHOUSE1.GOOD_COUNT = WAREHOUSE1.GOOD_COUNT - NUMBER_OF_GOODS
+            WHERE WAREHOUSE1.GOOD_ID = GOOD_ID_FOR_UPDATE;
+            
+        ELSIF WAREHOUSE1_COUNT < NUMBER_OF_GOODS AND WAREHOUSE2_COUNT >= (NUMBER_OF_GOODS - WAREHOUSE1_COUNT)
+        THEN  
+            UPDATE WAREHOUSE1
+            SET WAREHOUSE1.GOOD_COUNT = 0
+            WHERE WAREHOUSE1.GOOD_ID = GOOD_ID_FOR_UPDATE;
+            
+            UPDATE WAREHOUSE2
+            SET WAREHOUSE2.GOOD_COUNT = WAREHOUSE2.GOOD_COUNT - (NUMBER_OF_GOODS - WAREHOUSE1_COUNT)
+            WHERE WAREHOUSE2.GOOD_ID = GOOD_ID_FOR_UPDATE;
+            
+        ELSE    
+            DBMS_OUTPUT.PUT_LINE('Not enough goods');
+        END IF;
+    END;
+
+--2. В рамках транзакции поменять заданный товар во всех заявках на другой и удалить его.
+--то же, что и п.1, но транзакцию откатить.
+    DECLARE 
+        GOOD_NAME VARCHAR2(50 BYTE) := 'tmp';
+        GOOD_ID_FOR_UPDATE NUMBER;
+        
+    BEGIN
+        BEGIN
+            SELECT ID
+            INTO GOOD_ID_FOR_UPDATE
+            FROM GOODS
+            WHERE NAME = GOOD_NAME;
+        END;
+        
+        UPDATE SALES
+        SET GOOD_ID = GOOD_ID_FOR_UPDATE;
+        
+        DELETE FROM WAREHOUSE1
+        WHERE GOOD_ID = GOOD_ID_FOR_UPDATE;
+        
+        DELETE FROM WAREHOUSE2
+        WHERE GOOD_ID = GOOD_ID_FOR_UPDATE;
+        
+        DELETE FROM SALES
+        WHERE GOOD_ID = GOOD_ID_FOR_UPDATE;
+        
+        DELETE FROM GOODS
+        WHERE ID = GOOD_ID_FOR_UPDATE;
+        
+        COMMIT;
+        --ROLLBACK;
+    END;
+    
