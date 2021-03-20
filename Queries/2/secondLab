@@ -9,14 +9,9 @@ CLEAR SCREEN;
 --2. Посчитать количество товаров в заявках за заданную дату. 
     SELECT SUM(GOOD_COUNT)
     FROM SALES
-    WHERE CREATE_DATE = '01-02-2021'
+    WHERE CREATE_DATE = TO_DATE('09-02-21', 'dd-mm-yy')
     
 --3. Вывести все заявки на товары с приоритетом меньше заданного.
-    SELECT GOODS.NAME, SALES.GOOD_COUNT, GOODS.PRIORITY, SALES.CREATE_DATE
-    FROM SALES
-    JOIN GOODS ON SALES.GOOD_ID = GOODS.ID
-    WHERE GOODS.PRIORITY < 50
-    
     SELECT GOODS.NAME, SALES.GOOD_COUNT, GOODS.PRIORITY, SALES.CREATE_DATE
     FROM SALES, GOODS
     WHERE SALES.GOOD_ID IN
@@ -25,6 +20,11 @@ CLEAR SCREEN;
         FROM GOODS
         WHERE PRIORITY < 50
     ) AND SALES.GOOD_ID = GOODS.ID
+
+    SELECT GOODS.NAME, SALES.GOOD_COUNT, GOODS.PRIORITY, SALES.CREATE_DATE
+    FROM SALES
+    JOIN GOODS ON SALES.GOOD_ID = GOODS.ID
+    WHERE GOODS.PRIORITY < 50
     
 --4. Вывести наименования на товары, отсутствующие на «складе 1».
     SELECT NAME
@@ -45,11 +45,11 @@ CLEAR SCREEN;
     SELECT COUNT(DISTINCT NAME) AS COUNT
     FROM GOODS
     JOIN SALES ON GOODS.ID = SALES.GOOD_ID
-    WHERE SALES.CREATE_DATE <> '01-02-2021'
+    WHERE SALES.CREATE_DATE <> TO_DATE('01-02-21', 'dd-mm-yy')
 
 --7. Вывести суммарное количество заданного товара на первом и втором складах.
-    SELECT GOODS.NAME, COALESCE (WAREHOUSE1.GOOD_COUNT, 0) +
-    COALESCE (WAREHOUSE2.GOOD_COUNT, 0) AS COUNT
+    SELECT GOODS.NAME, COALESCE(WAREHOUSE1.GOOD_COUNT, 0) +
+    COALESCE(WAREHOUSE2.GOOD_COUNT, 0) AS COUNT
     FROM GOODS
     LEFT JOIN WAREHOUSE1 ON GOODS.ID = WAREHOUSE1.GOOD_ID
     LEFT JOIN WAREHOUSE2 ON GOODS.ID = WAREHOUSE2.GOOD_ID
@@ -63,7 +63,7 @@ CLEAR SCREEN;
         FROM SALES
         JOIN GOODS ON SALES.GOOD_ID = GOODS.ID
         WHERE SALES.CREATE_DATE
-        BETWEEN '01-01-19' AND '04-04-22'
+        BETWEEN TO_DATE('01-01-19', 'dd-mm-yy') AND TO_DATE('04-04-22', 'dd-mm-yy')
         GROUP BY GOODS.NAME
         ORDER BY TOTAL DESC
     )
@@ -82,11 +82,12 @@ CLEAR SCREEN;
         FROM GOODS
         WHERE NAME = 'TEST'
     )
-    , 432, '04-04-2021')
+    , 432, TO_DATE('04-04-2021', 'dd-mm-yy'))
     
 --3. Добавить в рамках транзакции новый товар и некоторое количество его завести
 --на «склад 2» и «склад 1». В случае, если суммарное число товаров на «складе 1»
 --превышает некоторую заданную величину – транзакцию откатить.
+    SET SERVEROUTPUT ON;
     DECLARE 
         WAREHOUSE1_COUNT NUMBER;
         WAREHOUSE2_COUNT NUMBER;
@@ -178,6 +179,7 @@ CLEAR SCREEN;
 --Модификация данных
 --1. Списать 5 единиц заданного товара со «склада 1». Если количество товара
 --на этом складе меньше 5, недостающее число списать со второго склада.
+    SET SERVEROUTPUT ON;
     DECLARE 
         GOOD_NAME VARCHAR2(50 BYTE) := 'Milk';
         GOOD_ID_FOR_UPDATE NUMBER;
