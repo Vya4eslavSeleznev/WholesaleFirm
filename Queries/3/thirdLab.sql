@@ -102,54 +102,108 @@ CLEAR SCREEN;
 --Если в какой-либо день один из товаров не продавался, такой день не рассматривается.
     SET SERVEROUTPUT ON;
     CREATE OR REPLACE PROCEDURE DEMAND_FOR_GOOD
-    (GOOD_NAME1  VARCHAR2(50 BYTE), GOOD_NAME2 VARCHAR2(50 BYTE))
+    (GOOD_NAME1 IN VARCHAR2, GOOD_NAME2 IN VARCHAR2)
     IS
         CURSOR DEMAND_CURSOR IS
 
 
 
 
+
+
+
+
+
+
+
 --Триггера
 --1. Создать триггер, который не позволяет добавить заявку на товар, число
---которого на обоих складах меньше указанного в заявке.
-    CREATE TRIGGER EVAL_CHANGE_TRIGGER
-    AFTER INSERT 
-    ON SALES
+--которого на обоих складах меньше указанного в заявке. 
+    CREATE TRIGGER CHECK_COUNT_OF_GOODS
+    BEFORE INSERT 
+        ON SALES
+        FOR EACH ROW
+        
     DECLARE
         WAREHOUSE1_COUNT NUMBER;
         WAREHOUSE2_COUNT NUMBER;
-        
     BEGIN
-        --GET GOOD ID
-    
-        BEGIN
-            SELECT GOOD_COUNT
-            INTO WAREHOUSE1_COUNT
-            FROM WAREHOUSE1
-            JOIN GOODS ON WAREHOUSE1.GOOD_ID = GOODS.ID
-            --WHERE GOODS.NAME = 'tmp';
-        END;
+        SELECT GOOD_COUNT
+        INTO WAREHOUSE1_COUNT
+        FROM WAREHOUSE1
+        WHERE GOOD_ID = :NEW.GOOD_ID;
         
-        BEGIN
-            SELECT GOOD_COUNT
-            INTO WAREHOUSE2_COUNT
-            FROM WAREHOUSE2
-            JOIN GOODS ON WAREHOUSE2.GOOD_ID = GOODS.ID
-            --WHERE GOODS.NAME = 'tmp';
-        END;
-    
+        SELECT GOOD_COUNT
+        INTO WAREHOUSE2_COUNT
+        FROM WAREHOUSE2
+        WHERE GOOD_ID = :NEW.GOOD_ID;
         
-    
-    
-    
+        IF WAREHOUSE1_COUNT + WAREHOUSE2_COUNT < :NEW.GOOD_COUNT THEN
+            RAISE_APPLICATION_ERROR(-20000, 'Not enough goods');        
+        END IF;
     END;
     
+    DROP TRIGGER CHECK_COUNT_OF_GOODS;
     
+--2. Создать триггер, который не позволяет добавить заявку c числом товара меньше 1.
+    CREATE TRIGGER CHECK_EMPTY_SALE
+    BEFORE INSERT 
+        ON SALES
+        FOR EACH ROW
+        
+    BEGIN
+        IF :NEW.GOOD_COUNT < 1 THEN
+            RAISE_APPLICATION_ERROR(-20000, 'Not enough goods');        
+        END IF;
+    END;
     
+    DROP TRIGGER CHECK_EMPTY_SALE;
     
+--3. Создать триггер, который не позволяет уменьшить число товара на 
+--«складе 2» при наличии этого товара на «складе 1».
+    CREATE TRIGGER UPDATE_WAREHOUSE
+    BEFORE UPDATE 
+        ON WAREHOUSE2
+        FOR EACH ROW
+        
+    DECLARE
+        WAREHOUSE1_COUNT NUMBER;
+        
+    BEGIN
+        SELECT COUNT(*) 
+        INTO WAREHOUSE1_COUNT
+        FROM WAREHOUSE1 WHERE GOOD_ID = :NEW.GOOD_ID;
+
+        IF WAREHOUSE1_COUNT > 0 THEN
+            RAISE_APPLICATION_ERROR(-20000, 'TEST MESSAGE'); 
+        END IF;
+    END;
     
+    DROP TRIGGER UPDATE_WAREHOUSE;
     
-    
+--4. Создать триггер, который при удалении товара в случае наличия на него
+--ссылок откатывает транзакцию.
+    CREATE TRIGGER UPDATE_WAREHOUSE
+    BEFORE DELETE 
+        ON WAREHOUSE2
+        FOR EACH ROW
+   
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
     
     
     
