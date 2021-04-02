@@ -102,20 +102,67 @@ CLEAR SCREEN;
 --Если в какой-либо день один из товаров не продавался, такой день не рассматривается.
     SET SERVEROUTPUT ON;
     CREATE OR REPLACE PROCEDURE DEMAND_FOR_GOOD
-    (GOOD_NAME1 IN VARCHAR2, GOOD_NAME2 IN VARCHAR2)
+    (GOOD_ID1 IN VARCHAR2, GOOD_ID2 IN VARCHAR2)
+    IS
+        CURSOR DEMAND_CURSOR1 IS
+            SELECT GOOD_ID, CREATE_DATE, SUM(GOOD_COUNT) AS CNT
+            FROM SALES
+            WHERE GOOD_ID = GOOD_ID1
+            GROUP BY GOOD_ID, CREATE_DATE;
+            
+            
+        CURSOR DEMAND_CURSOR2 IS
+            SELECT GOOD_ID, CREATE_DATE, SUM(GOOD_COUNT) AS CNT
+            FROM SALES
+            WHERE GOOD_ID = GOOD_ID2
+            GROUP BY GOOD_ID, CREATE_DATE;
+    
+        TOTAL1 NUMBER;
+        TOTAL2 NUMBER;
+    
+    BEGIN
+        FOR FIRST IN DEMAND_CURSOR1
+        LOOP
+            FOR SECOND IN DEMAND_CURSOR2
+            LOOP            
+                IF FIRST.CREATE_DATE = SECOND.CREATE_DATE
+                    AND FIRST.CNT > SECOND.CNT THEN
+                    DBMS_OUTPUT.PUT_LINE('Date=' || FIRST.CREATE_DATE);
+                END IF;
+            END LOOP;
+        END LOOP;
+    END;
+    
+--4. Создать хранимую процедуру с входными параметрами, задающими интервал
+--времени, и выходным – идентификатором товара. Процедура должна возвращать
+--товар с максимальным приростом спроса.
+    SET SERVEROUTPUT ON;
+    CREATE OR REPLACE PROCEDURE DEMAND_FOR_GOOD_BY_DATE
+    (FROM_DATE IN TIMESTAMP, TO_DATE IN TIMESTAMP, ID OUT NUMBER)
     IS
         CURSOR DEMAND_CURSOR IS
-
-
-
-
-
-
-
-
-
-
-
+            SELECT GOOD_ID
+            FROM
+            (
+                SELECT GOOD_ID
+                FROM SALES
+                WHERE CREATE_DATE BETWEEN FROM_DATE AND TO_DATE
+                GROUP BY GOOD_ID
+                ORDER BY SUM(GOOD_COUNT) DESC
+            )
+            WHERE ROWNUM <= 1;
+    
+    BEGIN
+        OPEN DEMAND_CURSOR;
+        LOOP
+            FETCH DEMAND_CURSOR
+            INTO ID;
+            EXIT WHEN DEMAND_CURSOR%NOTFOUND;
+            DBMS_OUTPUT.PUT_LINE('Id=' || ID);
+        END LOOP;
+        CLOSE DEMAND_CURSOR;
+    END;
+    
 --Триггера
 --1. Создать триггер, который не позволяет добавить заявку на товар, число
 --которого на обоих складах меньше указанного в заявке. 
@@ -128,15 +175,17 @@ CLEAR SCREEN;
         WAREHOUSE1_COUNT NUMBER;
         WAREHOUSE2_COUNT NUMBER;
     BEGIN
-        SELECT GOOD_COUNT
+        SELECT SUM(GOOD_COUNT) AS TOTAL
         INTO WAREHOUSE1_COUNT
         FROM WAREHOUSE1
-        WHERE GOOD_ID = :NEW.GOOD_ID;
+        WHERE GOOD_ID = :NEW.GOOD_ID
+        GROUP BY GOOD_ID;
         
-        SELECT GOOD_COUNT
+        SELECT SUM(GOOD_COUNT) AS TOTAL
         INTO WAREHOUSE2_COUNT
         FROM WAREHOUSE2
-        WHERE GOOD_ID = :NEW.GOOD_ID;
+        WHERE GOOD_ID = :NEW.GOOD_ID
+        GROUP BY GOOD_ID;
         
         IF WAREHOUSE1_COUNT + WAREHOUSE2_COUNT < :NEW.GOOD_COUNT THEN
             RAISE_APPLICATION_ERROR(-20000, 'Not enough goods');        
@@ -170,9 +219,10 @@ CLEAR SCREEN;
         WAREHOUSE1_COUNT NUMBER;
         
     BEGIN
-        SELECT COUNT(*) 
+        SELECT COUNT(*)
         INTO WAREHOUSE1_COUNT
-        FROM WAREHOUSE1 WHERE GOOD_ID = :NEW.GOOD_ID;
+        FROM WAREHOUSE1
+        WHERE GOOD_ID = :NEW.GOOD_ID;
 
         IF WAREHOUSE1_COUNT > 0 THEN
             RAISE_APPLICATION_ERROR(-20000, 'TEST MESSAGE'); 
@@ -183,13 +233,38 @@ CLEAR SCREEN;
     
 --4. Создать триггер, который при удалении товара в случае наличия на него
 --ссылок откатывает транзакцию.
-    CREATE TRIGGER UPDATE_WAREHOUSE
+    CREATE TRIGGER CHECK_FOREIGN_KEY
     BEFORE DELETE 
-        ON WAREHOUSE2
+        ON GOODS
         FOR EACH ROW
-   
-
-
+    
+    DECLARE
+        SALE_COUNT NUMBER;
+        WAREHOUSE1_COUNT NUMBER;
+        WAREHOUSE2_COUNT NUMBER;
+    
+    BEGIN
+        SELECT COUNT(*)
+        INTO SALE_COUNT
+        FROM SALES
+        WHERE GOOD_ID = :NEW.ID;
+        
+        SELECT COUNT(*)
+        INTO WAREHOUSE1_COUNT
+        FROM WAREHOUSE1
+        WHERE GOOD_ID = :NEW.ID;
+        
+        SELECT COUNT(*)
+        INTO WAREHOUSE2_COUNT
+        FROM WAREHOUSE2
+        WHERE GOOD_ID = :NEW.ID;
+        
+        IF SALE_COUNT > 0 OR WAREHOUSE1_COUNT > 0 OR WAREHOUSE2_COUNT > 0 THEN
+            RAISE_APPLICATION_ERROR(-20000, 'TEST MESSAGE');
+        END IF;
+    END;
+    
+    DROP TRIGGER CHECK_FOREIGN_KEY;
 
  
 
