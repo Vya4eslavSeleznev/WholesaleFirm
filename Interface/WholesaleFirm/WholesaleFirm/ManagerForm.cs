@@ -20,6 +20,16 @@ namespace WholesaleFirm
     {
       InitializeComponent();
       conn.Open();
+      /*try
+      {
+        conn.Open();
+      }
+      catch
+      {
+        MessageBox.Show("Server closed!");
+        return;
+      }*/
+
       setDataInWarehouses(warehouseQuery("WAREHOUSE1"), warehouse1DGV);
       setDataInWarehouses(warehouseQuery("WAREHOUSE2"), warehouse2DGV);
       setDataIntoWarehouseComboboxes();
@@ -30,12 +40,17 @@ namespace WholesaleFirm
       conn.Close();
     }
 
-    private void setDataInWarehouses(string warehouseQuery, DataGridView dgv)
+    private void setData(string query, DataGridView dgv)
     {
-      OracleDataAdapter dataAdapter = new OracleDataAdapter(warehouseQuery, conn);
+      OracleDataAdapter dataAdapter = new OracleDataAdapter(query, conn);
       DataTable dataTable = new DataTable();
       dataAdapter.Fill(dataTable);
       dgv.DataSource = dataTable;
+    }
+
+    private void setDataInWarehouses(string warehouseQuery, DataGridView dgv)
+    {
+      setData(warehouseQuery, dgv);
       //dgv.Columns[0].Visible = false;
     }
 
@@ -78,9 +93,14 @@ namespace WholesaleFirm
         case 0:
           //MessageBox.Show("TEST1");
           break;
+
         case 1:
-          setDataInGoods();
+          setData(goodQuery(), goodDGV);
           //MessageBox.Show("TEST2");
+          break;
+
+        case 2:
+          setData(saleQuery(), salesDGV);
           break;
       }
     }
@@ -116,16 +136,19 @@ namespace WholesaleFirm
       }
     }
 
-    private void setDataInGoods()
+    private string goodQuery()
     {
-      string goodQuery =
+      return
         "SELECT NAME, PRIORITY " +
         "FROM GOODS";
+    }
 
-      OracleDataAdapter dataAdapter = new OracleDataAdapter(goodQuery, conn);
-      DataTable dataTable = new DataTable();
-      dataAdapter.Fill(dataTable);
-      goodDGV.DataSource = dataTable;
+    private string saleQuery()
+    {
+      return
+        "SELECT GOODS.NAME, SALES.GOOD_COUNT, SALES.CREATE_DATE " +
+        "FROM SALES " +
+        "JOIN GOODS ON SALES.GOOD_ID = GOODS.ID";
     }
 
     private void addGoodButton_Click(object sender, EventArgs e)
@@ -141,8 +164,15 @@ namespace WholesaleFirm
       command.Parameters.Add(new OracleParameter("priority", priority));
       command.ExecuteNonQuery();
 
-      setDataInGoods();
+      setData(goodQuery(), goodDGV);
       MessageBox.Show("The good was successfully added!");
+    }
+
+    private void addSaleButton_Click(object sender, EventArgs e)
+    {
+
+
+
     }
   }
 }

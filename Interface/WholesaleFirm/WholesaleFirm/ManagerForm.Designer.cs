@@ -31,38 +31,50 @@ namespace WholesaleFirm
     {
       this.tabControl1 = new System.Windows.Forms.TabControl();
       this.tabPage1 = new System.Windows.Forms.TabPage();
+      this.typeOfWarehouseCB = new System.Windows.Forms.ComboBox();
+      this.label5 = new System.Windows.Forms.Label();
+      this.warehouseCountCB = new System.Windows.Forms.TextBox();
+      this.label4 = new System.Windows.Forms.Label();
+      this.warehouseGoodCB = new System.Windows.Forms.ComboBox();
+      this.label3 = new System.Windows.Forms.Label();
+      this.groupBox2 = new System.Windows.Forms.GroupBox();
+      this.warehouse2DGV = new System.Windows.Forms.DataGridView();
+      this.groupBox1 = new System.Windows.Forms.GroupBox();
+      this.warehouse1DGV = new System.Windows.Forms.DataGridView();
+      this.warehousesButton = new System.Windows.Forms.Button();
       this.tabPage2 = new System.Windows.Forms.TabPage();
+      this.goodPriorityNUD = new System.Windows.Forms.NumericUpDown();
+      this.forecastButton = new System.Windows.Forms.Button();
+      this.groupBox3 = new System.Windows.Forms.GroupBox();
+      this.goodDGV = new System.Windows.Forms.DataGridView();
       this.addGoodButton = new System.Windows.Forms.Button();
       this.goodNameTextBox = new System.Windows.Forms.TextBox();
       this.label2 = new System.Windows.Forms.Label();
       this.label1 = new System.Windows.Forms.Label();
-      this.goodDGV = new System.Windows.Forms.DataGridView();
       this.tabPage3 = new System.Windows.Forms.TabPage();
       this.tabPage4 = new System.Windows.Forms.TabPage();
-      this.warehouse1DGV = new System.Windows.Forms.DataGridView();
-      this.warehousesButton = new System.Windows.Forms.Button();
-      this.groupBox1 = new System.Windows.Forms.GroupBox();
-      this.groupBox2 = new System.Windows.Forms.GroupBox();
-      this.warehouse2DGV = new System.Windows.Forms.DataGridView();
-      this.label3 = new System.Windows.Forms.Label();
-      this.warehouseGoodCB = new System.Windows.Forms.ComboBox();
-      this.label4 = new System.Windows.Forms.Label();
-      this.warehouseCountCB = new System.Windows.Forms.TextBox();
-      this.label5 = new System.Windows.Forms.Label();
-      this.typeOfWarehouseCB = new System.Windows.Forms.ComboBox();
-      this.groupBox3 = new System.Windows.Forms.GroupBox();
-      this.forecastButton = new System.Windows.Forms.Button();
-      this.goodPriorityNUD = new System.Windows.Forms.NumericUpDown();
+      this.groupBox4 = new System.Windows.Forms.GroupBox();
+      this.salesDGV = new System.Windows.Forms.DataGridView();
+      this.addSaleButton = new System.Windows.Forms.Button();
+      this.label6 = new System.Windows.Forms.Label();
+      this.label7 = new System.Windows.Forms.Label();
+      this.saleGoodCB = new System.Windows.Forms.ComboBox();
+      this.saleDTP = new System.Windows.Forms.DateTimePicker();
+      this.label8 = new System.Windows.Forms.Label();
+      this.saleCountTB = new System.Windows.Forms.TextBox();
       this.tabControl1.SuspendLayout();
       this.tabPage1.SuspendLayout();
-      this.tabPage2.SuspendLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.goodDGV)).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)(this.warehouse1DGV)).BeginInit();
-      this.groupBox1.SuspendLayout();
       this.groupBox2.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.warehouse2DGV)).BeginInit();
-      this.groupBox3.SuspendLayout();
+      this.groupBox1.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.warehouse1DGV)).BeginInit();
+      this.tabPage2.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.goodPriorityNUD)).BeginInit();
+      this.groupBox3.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.goodDGV)).BeginInit();
+      this.tabPage3.SuspendLayout();
+      this.groupBox4.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.salesDGV)).BeginInit();
       this.SuspendLayout();
       // 
       // tabControl1
@@ -97,6 +109,106 @@ namespace WholesaleFirm
       this.tabPage1.Text = "Warehouses";
       this.tabPage1.UseVisualStyleBackColor = true;
       // 
+      // typeOfWarehouseCB
+      // 
+      this.typeOfWarehouseCB.FormattingEnabled = true;
+      this.typeOfWarehouseCB.Location = new System.Drawing.Point(188, 41);
+      this.typeOfWarehouseCB.Name = "typeOfWarehouseCB";
+      this.typeOfWarehouseCB.Size = new System.Drawing.Size(249, 24);
+      this.typeOfWarehouseCB.TabIndex = 9;
+      // 
+      // label5
+      // 
+      this.label5.AutoSize = true;
+      this.label5.Location = new System.Drawing.Point(34, 44);
+      this.label5.Name = "label5";
+      this.label5.Size = new System.Drawing.Size(148, 17);
+      this.label5.TabIndex = 8;
+      this.label5.Text = "Select the warehouse:";
+      // 
+      // warehouseCountCB
+      // 
+      this.warehouseCountCB.Location = new System.Drawing.Point(582, 6);
+      this.warehouseCountCB.Name = "warehouseCountCB";
+      this.warehouseCountCB.Size = new System.Drawing.Size(291, 22);
+      this.warehouseCountCB.TabIndex = 7;
+      // 
+      // label4
+      // 
+      this.label4.AutoSize = true;
+      this.label4.Location = new System.Drawing.Point(470, 9);
+      this.label4.Name = "label4";
+      this.label4.Size = new System.Drawing.Size(49, 17);
+      this.label4.TabIndex = 6;
+      this.label4.Text = "Count:";
+      // 
+      // warehouseGoodCB
+      // 
+      this.warehouseGoodCB.FormattingEnabled = true;
+      this.warehouseGoodCB.Location = new System.Drawing.Point(146, 6);
+      this.warehouseGoodCB.Name = "warehouseGoodCB";
+      this.warehouseGoodCB.Size = new System.Drawing.Size(291, 24);
+      this.warehouseGoodCB.TabIndex = 5;
+      // 
+      // label3
+      // 
+      this.label3.AutoSize = true;
+      this.label3.Location = new System.Drawing.Point(34, 9);
+      this.label3.Name = "label3";
+      this.label3.Size = new System.Drawing.Size(47, 17);
+      this.label3.TabIndex = 4;
+      this.label3.Text = "Good:";
+      // 
+      // groupBox2
+      // 
+      this.groupBox2.Controls.Add(this.warehouse2DGV);
+      this.groupBox2.Location = new System.Drawing.Point(467, 71);
+      this.groupBox2.Name = "groupBox2";
+      this.groupBox2.Size = new System.Drawing.Size(416, 447);
+      this.groupBox2.TabIndex = 3;
+      this.groupBox2.TabStop = false;
+      this.groupBox2.Text = "Warehouse 2:";
+      // 
+      // warehouse2DGV
+      // 
+      this.warehouse2DGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+      this.warehouse2DGV.Location = new System.Drawing.Point(6, 21);
+      this.warehouse2DGV.Name = "warehouse2DGV";
+      this.warehouse2DGV.RowHeadersWidth = 51;
+      this.warehouse2DGV.RowTemplate.Height = 24;
+      this.warehouse2DGV.Size = new System.Drawing.Size(400, 420);
+      this.warehouse2DGV.TabIndex = 0;
+      // 
+      // groupBox1
+      // 
+      this.groupBox1.Controls.Add(this.warehouse1DGV);
+      this.groupBox1.Location = new System.Drawing.Point(31, 71);
+      this.groupBox1.Name = "groupBox1";
+      this.groupBox1.Size = new System.Drawing.Size(415, 447);
+      this.groupBox1.TabIndex = 2;
+      this.groupBox1.TabStop = false;
+      this.groupBox1.Text = "Warehouse 1:";
+      // 
+      // warehouse1DGV
+      // 
+      this.warehouse1DGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+      this.warehouse1DGV.Location = new System.Drawing.Point(6, 21);
+      this.warehouse1DGV.Name = "warehouse1DGV";
+      this.warehouse1DGV.RowHeadersWidth = 51;
+      this.warehouse1DGV.RowTemplate.Height = 24;
+      this.warehouse1DGV.Size = new System.Drawing.Size(400, 420);
+      this.warehouse1DGV.TabIndex = 0;
+      // 
+      // warehousesButton
+      // 
+      this.warehousesButton.Location = new System.Drawing.Point(473, 39);
+      this.warehousesButton.Name = "warehousesButton";
+      this.warehousesButton.Size = new System.Drawing.Size(400, 26);
+      this.warehousesButton.TabIndex = 1;
+      this.warehousesButton.Text = "Deliver to the warehouse";
+      this.warehousesButton.UseVisualStyleBackColor = true;
+      this.warehousesButton.Click += new System.EventHandler(this.warehousesButton_Click);
+      // 
       // tabPage2
       // 
       this.tabPage2.Controls.Add(this.goodPriorityNUD);
@@ -113,6 +225,42 @@ namespace WholesaleFirm
       this.tabPage2.TabIndex = 1;
       this.tabPage2.Text = "Goods";
       this.tabPage2.UseVisualStyleBackColor = true;
+      // 
+      // goodPriorityNUD
+      // 
+      this.goodPriorityNUD.Location = new System.Drawing.Point(134, 49);
+      this.goodPriorityNUD.Name = "goodPriorityNUD";
+      this.goodPriorityNUD.Size = new System.Drawing.Size(368, 22);
+      this.goodPriorityNUD.TabIndex = 9;
+      // 
+      // forecastButton
+      // 
+      this.forecastButton.Location = new System.Drawing.Point(602, 45);
+      this.forecastButton.Name = "forecastButton";
+      this.forecastButton.Size = new System.Drawing.Size(277, 34);
+      this.forecastButton.TabIndex = 7;
+      this.forecastButton.Text = "Forecast demand";
+      this.forecastButton.UseVisualStyleBackColor = true;
+      // 
+      // groupBox3
+      // 
+      this.groupBox3.Controls.Add(this.goodDGV);
+      this.groupBox3.Location = new System.Drawing.Point(39, 81);
+      this.groupBox3.Name = "groupBox3";
+      this.groupBox3.Size = new System.Drawing.Size(840, 431);
+      this.groupBox3.TabIndex = 6;
+      this.groupBox3.TabStop = false;
+      this.groupBox3.Text = "Goods";
+      // 
+      // goodDGV
+      // 
+      this.goodDGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+      this.goodDGV.Location = new System.Drawing.Point(93, 21);
+      this.goodDGV.Name = "goodDGV";
+      this.goodDGV.RowHeadersWidth = 51;
+      this.goodDGV.RowTemplate.Height = 24;
+      this.goodDGV.Size = new System.Drawing.Size(676, 404);
+      this.goodDGV.TabIndex = 0;
       // 
       // addGoodButton
       // 
@@ -149,18 +297,16 @@ namespace WholesaleFirm
       this.label1.TabIndex = 1;
       this.label1.Text = "Name:";
       // 
-      // goodDGV
-      // 
-      this.goodDGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-      this.goodDGV.Location = new System.Drawing.Point(93, 21);
-      this.goodDGV.Name = "goodDGV";
-      this.goodDGV.RowHeadersWidth = 51;
-      this.goodDGV.RowTemplate.Height = 24;
-      this.goodDGV.Size = new System.Drawing.Size(676, 404);
-      this.goodDGV.TabIndex = 0;
-      // 
       // tabPage3
       // 
+      this.tabPage3.Controls.Add(this.saleCountTB);
+      this.tabPage3.Controls.Add(this.label8);
+      this.tabPage3.Controls.Add(this.saleDTP);
+      this.tabPage3.Controls.Add(this.saleGoodCB);
+      this.tabPage3.Controls.Add(this.addSaleButton);
+      this.tabPage3.Controls.Add(this.label6);
+      this.tabPage3.Controls.Add(this.label7);
+      this.tabPage3.Controls.Add(this.groupBox4);
       this.tabPage3.Location = new System.Drawing.Point(4, 25);
       this.tabPage3.Name = "tabPage3";
       this.tabPage3.Size = new System.Drawing.Size(923, 542);
@@ -177,131 +323,84 @@ namespace WholesaleFirm
       this.tabPage4.Text = "Statistic";
       this.tabPage4.UseVisualStyleBackColor = true;
       // 
-      // warehouse1DGV
+      // groupBox4
       // 
-      this.warehouse1DGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-      this.warehouse1DGV.Location = new System.Drawing.Point(6, 21);
-      this.warehouse1DGV.Name = "warehouse1DGV";
-      this.warehouse1DGV.RowHeadersWidth = 51;
-      this.warehouse1DGV.RowTemplate.Height = 24;
-      this.warehouse1DGV.Size = new System.Drawing.Size(400, 420);
-      this.warehouse1DGV.TabIndex = 0;
+      this.groupBox4.Controls.Add(this.salesDGV);
+      this.groupBox4.Location = new System.Drawing.Point(37, 84);
+      this.groupBox4.Name = "groupBox4";
+      this.groupBox4.Size = new System.Drawing.Size(840, 431);
+      this.groupBox4.TabIndex = 7;
+      this.groupBox4.TabStop = false;
+      this.groupBox4.Text = "Sales";
       // 
-      // warehousesButton
+      // salesDGV
       // 
-      this.warehousesButton.Location = new System.Drawing.Point(473, 39);
-      this.warehousesButton.Name = "warehousesButton";
-      this.warehousesButton.Size = new System.Drawing.Size(400, 26);
-      this.warehousesButton.TabIndex = 1;
-      this.warehousesButton.Text = "Deliver to the warehouse";
-      this.warehousesButton.UseVisualStyleBackColor = true;
-      this.warehousesButton.Click += new System.EventHandler(this.warehousesButton_Click);
+      this.salesDGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+      this.salesDGV.Location = new System.Drawing.Point(93, 21);
+      this.salesDGV.Name = "salesDGV";
+      this.salesDGV.RowHeadersWidth = 51;
+      this.salesDGV.RowTemplate.Height = 24;
+      this.salesDGV.Size = new System.Drawing.Size(676, 404);
+      this.salesDGV.TabIndex = 0;
       // 
-      // groupBox1
+      // addSaleButton
       // 
-      this.groupBox1.Controls.Add(this.warehouse1DGV);
-      this.groupBox1.Location = new System.Drawing.Point(31, 71);
-      this.groupBox1.Name = "groupBox1";
-      this.groupBox1.Size = new System.Drawing.Size(415, 447);
-      this.groupBox1.TabIndex = 2;
-      this.groupBox1.TabStop = false;
-      this.groupBox1.Text = "Warehouse 1:";
+      this.addSaleButton.Location = new System.Drawing.Point(483, 40);
+      this.addSaleButton.Name = "addSaleButton";
+      this.addSaleButton.Size = new System.Drawing.Size(394, 26);
+      this.addSaleButton.TabIndex = 14;
+      this.addSaleButton.Text = "Add sale";
+      this.addSaleButton.UseVisualStyleBackColor = true;
+      this.addSaleButton.Click += new System.EventHandler(this.addSaleButton_Click);
       // 
-      // groupBox2
+      // label6
       // 
-      this.groupBox2.Controls.Add(this.warehouse2DGV);
-      this.groupBox2.Location = new System.Drawing.Point(467, 71);
-      this.groupBox2.Name = "groupBox2";
-      this.groupBox2.Size = new System.Drawing.Size(416, 447);
-      this.groupBox2.TabIndex = 3;
-      this.groupBox2.TabStop = false;
-      this.groupBox2.Text = "Warehouse 2:";
+      this.label6.AutoSize = true;
+      this.label6.Location = new System.Drawing.Point(34, 49);
+      this.label6.Name = "label6";
+      this.label6.Size = new System.Drawing.Size(42, 17);
+      this.label6.TabIndex = 11;
+      this.label6.Text = "Date:";
       // 
-      // warehouse2DGV
+      // label7
       // 
-      this.warehouse2DGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-      this.warehouse2DGV.Location = new System.Drawing.Point(6, 21);
-      this.warehouse2DGV.Name = "warehouse2DGV";
-      this.warehouse2DGV.RowHeadersWidth = 51;
-      this.warehouse2DGV.RowTemplate.Height = 24;
-      this.warehouse2DGV.Size = new System.Drawing.Size(400, 420);
-      this.warehouse2DGV.TabIndex = 0;
+      this.label7.AutoSize = true;
+      this.label7.Location = new System.Drawing.Point(34, 17);
+      this.label7.Name = "label7";
+      this.label7.Size = new System.Drawing.Size(47, 17);
+      this.label7.TabIndex = 10;
+      this.label7.Text = "Good:";
       // 
-      // label3
+      // saleGoodCB
       // 
-      this.label3.AutoSize = true;
-      this.label3.Location = new System.Drawing.Point(34, 9);
-      this.label3.Name = "label3";
-      this.label3.Size = new System.Drawing.Size(47, 17);
-      this.label3.TabIndex = 4;
-      this.label3.Text = "Good:";
+      this.saleGoodCB.FormattingEnabled = true;
+      this.saleGoodCB.Location = new System.Drawing.Point(130, 10);
+      this.saleGoodCB.Name = "saleGoodCB";
+      this.saleGoodCB.Size = new System.Drawing.Size(300, 24);
+      this.saleGoodCB.TabIndex = 15;
       // 
-      // warehouseGoodCB
+      // saleDTP
       // 
-      this.warehouseGoodCB.FormattingEnabled = true;
-      this.warehouseGoodCB.Location = new System.Drawing.Point(146, 6);
-      this.warehouseGoodCB.Name = "warehouseGoodCB";
-      this.warehouseGoodCB.Size = new System.Drawing.Size(291, 24);
-      this.warehouseGoodCB.TabIndex = 5;
+      this.saleDTP.Location = new System.Drawing.Point(130, 44);
+      this.saleDTP.Name = "saleDTP";
+      this.saleDTP.Size = new System.Drawing.Size(300, 22);
+      this.saleDTP.TabIndex = 16;
       // 
-      // label4
+      // label8
       // 
-      this.label4.AutoSize = true;
-      this.label4.Location = new System.Drawing.Point(470, 9);
-      this.label4.Name = "label4";
-      this.label4.Size = new System.Drawing.Size(49, 17);
-      this.label4.TabIndex = 6;
-      this.label4.Text = "Count:";
+      this.label8.AutoSize = true;
+      this.label8.Location = new System.Drawing.Point(480, 17);
+      this.label8.Name = "label8";
+      this.label8.Size = new System.Drawing.Size(49, 17);
+      this.label8.TabIndex = 17;
+      this.label8.Text = "Count:";
       // 
-      // warehouseCountCB
+      // saleCountTB
       // 
-      this.warehouseCountCB.Location = new System.Drawing.Point(582, 6);
-      this.warehouseCountCB.Name = "warehouseCountCB";
-      this.warehouseCountCB.Size = new System.Drawing.Size(291, 22);
-      this.warehouseCountCB.TabIndex = 7;
-      // 
-      // label5
-      // 
-      this.label5.AutoSize = true;
-      this.label5.Location = new System.Drawing.Point(34, 44);
-      this.label5.Name = "label5";
-      this.label5.Size = new System.Drawing.Size(148, 17);
-      this.label5.TabIndex = 8;
-      this.label5.Text = "Select the warehouse:";
-      // 
-      // typeOfWarehouseCB
-      // 
-      this.typeOfWarehouseCB.FormattingEnabled = true;
-      this.typeOfWarehouseCB.Location = new System.Drawing.Point(188, 41);
-      this.typeOfWarehouseCB.Name = "typeOfWarehouseCB";
-      this.typeOfWarehouseCB.Size = new System.Drawing.Size(249, 24);
-      this.typeOfWarehouseCB.TabIndex = 9;
-      // 
-      // groupBox3
-      // 
-      this.groupBox3.Controls.Add(this.goodDGV);
-      this.groupBox3.Location = new System.Drawing.Point(33, 81);
-      this.groupBox3.Name = "groupBox3";
-      this.groupBox3.Size = new System.Drawing.Size(852, 431);
-      this.groupBox3.TabIndex = 6;
-      this.groupBox3.TabStop = false;
-      this.groupBox3.Text = "Goods";
-      // 
-      // forecastButton
-      // 
-      this.forecastButton.Location = new System.Drawing.Point(602, 45);
-      this.forecastButton.Name = "forecastButton";
-      this.forecastButton.Size = new System.Drawing.Size(277, 34);
-      this.forecastButton.TabIndex = 7;
-      this.forecastButton.Text = "Forecast demand";
-      this.forecastButton.UseVisualStyleBackColor = true;
-      // 
-      // goodPriorityNUD
-      // 
-      this.goodPriorityNUD.Location = new System.Drawing.Point(134, 49);
-      this.goodPriorityNUD.Name = "goodPriorityNUD";
-      this.goodPriorityNUD.Size = new System.Drawing.Size(368, 22);
-      this.goodPriorityNUD.TabIndex = 9;
+      this.saleCountTB.Location = new System.Drawing.Point(578, 10);
+      this.saleCountTB.Name = "saleCountTB";
+      this.saleCountTB.Size = new System.Drawing.Size(299, 22);
+      this.saleCountTB.TabIndex = 18;
       // 
       // ManagerForm
       // 
@@ -316,15 +415,19 @@ namespace WholesaleFirm
       this.tabControl1.ResumeLayout(false);
       this.tabPage1.ResumeLayout(false);
       this.tabPage1.PerformLayout();
-      this.tabPage2.ResumeLayout(false);
-      this.tabPage2.PerformLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.goodDGV)).EndInit();
-      ((System.ComponentModel.ISupportInitialize)(this.warehouse1DGV)).EndInit();
-      this.groupBox1.ResumeLayout(false);
       this.groupBox2.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.warehouse2DGV)).EndInit();
-      this.groupBox3.ResumeLayout(false);
+      this.groupBox1.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.warehouse1DGV)).EndInit();
+      this.tabPage2.ResumeLayout(false);
+      this.tabPage2.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.goodPriorityNUD)).EndInit();
+      this.groupBox3.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.goodDGV)).EndInit();
+      this.tabPage3.ResumeLayout(false);
+      this.tabPage3.PerformLayout();
+      this.groupBox4.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.salesDGV)).EndInit();
       this.ResumeLayout(false);
 
     }
@@ -355,5 +458,14 @@ namespace WholesaleFirm
     private System.Windows.Forms.Button forecastButton;
     private System.Windows.Forms.GroupBox groupBox3;
     private System.Windows.Forms.NumericUpDown goodPriorityNUD;
+    private System.Windows.Forms.TextBox saleCountTB;
+    private System.Windows.Forms.Label label8;
+    private System.Windows.Forms.DateTimePicker saleDTP;
+    private System.Windows.Forms.ComboBox saleGoodCB;
+    private System.Windows.Forms.Button addSaleButton;
+    private System.Windows.Forms.Label label6;
+    private System.Windows.Forms.Label label7;
+    private System.Windows.Forms.GroupBox groupBox4;
+    private System.Windows.Forms.DataGridView salesDGV;
   }
 }
