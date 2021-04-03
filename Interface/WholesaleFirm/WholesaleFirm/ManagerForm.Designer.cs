@@ -33,7 +33,6 @@ namespace WholesaleFirm
       this.tabPage1 = new System.Windows.Forms.TabPage();
       this.tabPage2 = new System.Windows.Forms.TabPage();
       this.addGoodButton = new System.Windows.Forms.Button();
-      this.goodPriorityTextBox = new System.Windows.Forms.TextBox();
       this.goodNameTextBox = new System.Windows.Forms.TextBox();
       this.label2 = new System.Windows.Forms.Label();
       this.label1 = new System.Windows.Forms.Label();
@@ -53,6 +52,7 @@ namespace WholesaleFirm
       this.typeOfWarehouseCB = new System.Windows.Forms.ComboBox();
       this.groupBox3 = new System.Windows.Forms.GroupBox();
       this.forecastButton = new System.Windows.Forms.Button();
+      this.goodPriorityNUD = new System.Windows.Forms.NumericUpDown();
       this.tabControl1.SuspendLayout();
       this.tabPage1.SuspendLayout();
       this.tabPage2.SuspendLayout();
@@ -62,6 +62,7 @@ namespace WholesaleFirm
       this.groupBox2.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.warehouse2DGV)).BeginInit();
       this.groupBox3.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.goodPriorityNUD)).BeginInit();
       this.SuspendLayout();
       // 
       // tabControl1
@@ -98,10 +99,10 @@ namespace WholesaleFirm
       // 
       // tabPage2
       // 
+      this.tabPage2.Controls.Add(this.goodPriorityNUD);
       this.tabPage2.Controls.Add(this.forecastButton);
       this.tabPage2.Controls.Add(this.groupBox3);
       this.tabPage2.Controls.Add(this.addGoodButton);
-      this.tabPage2.Controls.Add(this.goodPriorityTextBox);
       this.tabPage2.Controls.Add(this.goodNameTextBox);
       this.tabPage2.Controls.Add(this.label2);
       this.tabPage2.Controls.Add(this.label1);
@@ -121,13 +122,7 @@ namespace WholesaleFirm
       this.addGoodButton.TabIndex = 5;
       this.addGoodButton.Text = "Add good";
       this.addGoodButton.UseVisualStyleBackColor = true;
-      // 
-      // goodPriorityTextBox
-      // 
-      this.goodPriorityTextBox.Location = new System.Drawing.Point(134, 49);
-      this.goodPriorityTextBox.Name = "goodPriorityTextBox";
-      this.goodPriorityTextBox.Size = new System.Drawing.Size(368, 22);
-      this.goodPriorityTextBox.TabIndex = 4;
+      this.addGoodButton.Click += new System.EventHandler(this.addGoodButton_Click);
       // 
       // goodNameTextBox
       // 
@@ -301,6 +296,13 @@ namespace WholesaleFirm
       this.forecastButton.Text = "Forecast demand";
       this.forecastButton.UseVisualStyleBackColor = true;
       // 
+      // goodPriorityNUD
+      // 
+      this.goodPriorityNUD.Location = new System.Drawing.Point(134, 49);
+      this.goodPriorityNUD.Name = "goodPriorityNUD";
+      this.goodPriorityNUD.Size = new System.Drawing.Size(368, 22);
+      this.goodPriorityNUD.TabIndex = 9;
+      // 
       // ManagerForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -322,6 +324,7 @@ namespace WholesaleFirm
       this.groupBox2.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.warehouse2DGV)).EndInit();
       this.groupBox3.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.goodPriorityNUD)).EndInit();
       this.ResumeLayout(false);
 
     }
@@ -335,7 +338,6 @@ namespace WholesaleFirm
     private System.Windows.Forms.TabPage tabPage4;
     private System.Windows.Forms.DataGridView goodDGV;
     private System.Windows.Forms.Button addGoodButton;
-    private System.Windows.Forms.TextBox goodPriorityTextBox;
     private System.Windows.Forms.TextBox goodNameTextBox;
     private System.Windows.Forms.Label label2;
     private System.Windows.Forms.Label label1;
@@ -352,5 +354,6 @@ namespace WholesaleFirm
     private System.Windows.Forms.Label label3;
     private System.Windows.Forms.Button forecastButton;
     private System.Windows.Forms.GroupBox groupBox3;
+    private System.Windows.Forms.NumericUpDown goodPriorityNUD;
   }
 }

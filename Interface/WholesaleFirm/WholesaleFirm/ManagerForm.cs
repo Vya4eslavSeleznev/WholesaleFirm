@@ -128,8 +128,21 @@ namespace WholesaleFirm
       goodDGV.DataSource = dataTable;
     }
 
+    private void addGoodButton_Click(object sender, EventArgs e)
+    {
+      string name = goodNameTextBox.Text;
+      int priority = Convert.ToInt32(goodPriorityNUD.Value);
 
+      string query =
+        "INSERT INTO GOODS(NAME, PRIORITY) VALUES(:name, :priority)";
 
+      OracleCommand command = new OracleCommand(query, conn);
+      command.Parameters.Add(new OracleParameter("name", name));
+      command.Parameters.Add(new OracleParameter("priority", priority));
+      command.ExecuteNonQuery();
 
+      setDataInGoods();
+      MessageBox.Show("The good was successfully added!");
+    }
   }
 }
