@@ -15,13 +15,14 @@ namespace WholesaleFirm
 {
   public partial class ManagerForm : Form
   {
-    OracleConnection conn = new OracleConnection("Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=xe)));User Id=c##test;Password=MyPass");
+    OracleConnection conn = new OracleConnection("Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)" +
+      "(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=xe)));User Id=c##test;Password=MyPass");
 
     public ManagerForm()
     {
       InitializeComponent();
-      conn.Open();
-      /*try
+
+      try
       {
         conn.Open();
       }
@@ -29,11 +30,19 @@ namespace WholesaleFirm
       {
         MessageBox.Show("Server closed!");
         return;
-      }*/
+      }
 
       setDataInWarehouses(warehouseQuery("WAREHOUSE1"), warehouse1DGV);
       setDataInWarehouses(warehouseQuery("WAREHOUSE2"), warehouse2DGV);
-      setDataIntoWarehouseComboboxes();
+      setData(goodQuery(), goodDGV);
+      setData(saleQuery(), salesDGV);
+      addButtons();
+      saleDTP.Value.ToShortDateString();
+
+      setDataIntoGoodComboboxes(warehouseGoodCB);
+      setDataIntoGoodComboboxes(saleGoodCB);
+      typeOfWarehouseCB.Items.Add("First warehouse");
+      typeOfWarehouseCB.Items.Add("Second warehouse");
     }
 
     private void ManagerForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -55,18 +64,15 @@ namespace WholesaleFirm
       dgv.Columns[0].Visible = false;
     }
 
-    private void setDataIntoWarehouseComboboxes()
+    private void setDataIntoGoodComboboxes(ComboBox cb)
     {
       OracleCommand cmd = new OracleCommand("SELECT ID, NAME, PRIORITY FROM GOODS", conn);
       OracleDataReader dr = cmd.ExecuteReader();
 
       while(dr.Read())
       {
-        warehouseGoodCB.Items.Add(new Model.Good(dr.GetInt32(0), dr.GetString(1), dr.GetInt32(2)));
+        cb.Items.Add(new Model.Good(dr.GetInt32(0), dr.GetString(1), dr.GetInt32(2)));
       }
-
-      typeOfWarehouseCB.Items.Add("First warehouse");
-      typeOfWarehouseCB.Items.Add("Second warehouse");
     }
 
     private string warehouseQuery(string warehouse)
@@ -77,27 +83,6 @@ namespace WholesaleFirm
         $"JOIN GOODS ON {warehouse}.GOOD_ID = GOODS.ID " +
         $"GROUP BY {warehouse}.GOOD_ID, GOODS.NAME " +
         "ORDER BY Total DESC";
-    }
-
-    private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
-    {
-      //TEST CODE
-
-      switch ((sender as TabControl).SelectedIndex)
-      {
-        case 0:
-          //MessageBox.Show("TEST1");
-          break;
-
-        case 1:
-          setData(goodQuery(), goodDGV);
-          //MessageBox.Show("TEST2");
-          break;
-
-        case 2:
-          setData(saleQuery(), salesDGV);
-          break;
-      }
     }
 
     private void insertIntoWarehouse(string warehouse, int id, int count)
@@ -181,14 +166,65 @@ namespace WholesaleFirm
       command.ExecuteNonQuery();
 
       setData(goodQuery(), goodDGV);
+
+      //UPDATE COMBOBOXES
+
       MessageBox.Show("The good was successfully added!");
     }
 
     private void addSaleButton_Click(object sender, EventArgs e)
     {
+      //VALIDATION
 
+      var date = saleDTP.Value.Date.ToString("yyyy / MM / dd");
+      int goodId = Helpers.GetSelectedId(saleGoodCB);
+      int count = -1;
 
+      try
+      {
+        count = int.Parse(saleCountTB.Text);
+      }
+      catch
+      {
+        MessageBox.Show("Invalid count!");
+        return;
+      }
 
+      string query =
+        "INSERT INTO SALE(GOOD_ID, GOOD_COUNT, CREATE_DATE) VALUES(:id, :count, :date)";
+
+      OracleCommand command = new OracleCommand(query, conn);
+      command.Parameters.Add(new OracleParameter("id", goodId));
+      command.Parameters.Add(new OracleParameter("count", count));
+      command.Parameters.Add(new OracleParameter("date", date));
+      command.ExecuteNonQuery();
+
+      MessageBox.Show("Sale added successfully!");
+      setData(saleQuery(), salesDGV);
+    }
+
+    private void addButtonInDataGrid(DataGridView dataGrid, string headerText, string buttonText, string buttonName)
+    {
+      DataGridViewButtonColumn button = new DataGridViewButtonColumn();
+      dataGrid.Columns.Add(button);
+      button.HeaderText = headerText;
+      button.Text = buttonText;
+      button.Name = buttonName;
+      button.UseColumnTextForButtonValue = true;
+    }
+
+    private void addButtons()
+    {
+      addButtonInDataGrid(warehouse1DGV, "Click to edit", "Edit", "editButton");
+      addButtonInDataGrid(warehouse2DGV, "Click to edit", "Edit", "editButton");
+      addButtonInDataGrid(warehouse1DGV, "Click to delete", "Delete", "deleteButton");
+      addButtonInDataGrid(warehouse2DGV, "Click to delete", "Delete", "deleteButton");
+
+      addButtonInDataGrid(goodDGV, "Click to edit", "Edit", "editButton");
+      addButtonInDataGrid(goodDGV, "Click to delete", "Delete", "deleteButton");
+
+      addButtonInDataGrid(salesDGV, "Click to edit", "Edit", "editButton");
+      addButtonInDataGrid(salesDGV, "Click to delete", "Delete", "deleteButton");
     }
   }
 }

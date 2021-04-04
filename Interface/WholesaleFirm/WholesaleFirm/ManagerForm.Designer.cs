@@ -52,16 +52,16 @@ namespace WholesaleFirm
       this.label2 = new System.Windows.Forms.Label();
       this.label1 = new System.Windows.Forms.Label();
       this.tabPage3 = new System.Windows.Forms.TabPage();
-      this.tabPage4 = new System.Windows.Forms.TabPage();
-      this.groupBox4 = new System.Windows.Forms.GroupBox();
-      this.salesDGV = new System.Windows.Forms.DataGridView();
+      this.saleCountTB = new System.Windows.Forms.TextBox();
+      this.label8 = new System.Windows.Forms.Label();
+      this.saleDTP = new System.Windows.Forms.DateTimePicker();
+      this.saleGoodCB = new System.Windows.Forms.ComboBox();
       this.addSaleButton = new System.Windows.Forms.Button();
       this.label6 = new System.Windows.Forms.Label();
       this.label7 = new System.Windows.Forms.Label();
-      this.saleGoodCB = new System.Windows.Forms.ComboBox();
-      this.saleDTP = new System.Windows.Forms.DateTimePicker();
-      this.label8 = new System.Windows.Forms.Label();
-      this.saleCountTB = new System.Windows.Forms.TextBox();
+      this.groupBox4 = new System.Windows.Forms.GroupBox();
+      this.salesDGV = new System.Windows.Forms.DataGridView();
+      this.tabPage4 = new System.Windows.Forms.TabPage();
       this.tabControl1.SuspendLayout();
       this.tabPage1.SuspendLayout();
       this.groupBox2.SuspendLayout();
@@ -88,7 +88,6 @@ namespace WholesaleFirm
       this.tabControl1.SelectedIndex = 0;
       this.tabControl1.Size = new System.Drawing.Size(931, 571);
       this.tabControl1.TabIndex = 0;
-      this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
       // 
       // tabPage1
       // 
@@ -314,34 +313,36 @@ namespace WholesaleFirm
       this.tabPage3.Text = "Sales";
       this.tabPage3.UseVisualStyleBackColor = true;
       // 
-      // tabPage4
+      // saleCountTB
       // 
-      this.tabPage4.Location = new System.Drawing.Point(4, 25);
-      this.tabPage4.Name = "tabPage4";
-      this.tabPage4.Size = new System.Drawing.Size(923, 542);
-      this.tabPage4.TabIndex = 3;
-      this.tabPage4.Text = "Statistic";
-      this.tabPage4.UseVisualStyleBackColor = true;
+      this.saleCountTB.Location = new System.Drawing.Point(578, 10);
+      this.saleCountTB.Name = "saleCountTB";
+      this.saleCountTB.Size = new System.Drawing.Size(299, 22);
+      this.saleCountTB.TabIndex = 18;
       // 
-      // groupBox4
+      // label8
       // 
-      this.groupBox4.Controls.Add(this.salesDGV);
-      this.groupBox4.Location = new System.Drawing.Point(37, 84);
-      this.groupBox4.Name = "groupBox4";
-      this.groupBox4.Size = new System.Drawing.Size(840, 431);
-      this.groupBox4.TabIndex = 7;
-      this.groupBox4.TabStop = false;
-      this.groupBox4.Text = "Sales";
+      this.label8.AutoSize = true;
+      this.label8.Location = new System.Drawing.Point(480, 17);
+      this.label8.Name = "label8";
+      this.label8.Size = new System.Drawing.Size(49, 17);
+      this.label8.TabIndex = 17;
+      this.label8.Text = "Count:";
       // 
-      // salesDGV
+      // saleDTP
       // 
-      this.salesDGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-      this.salesDGV.Location = new System.Drawing.Point(93, 21);
-      this.salesDGV.Name = "salesDGV";
-      this.salesDGV.RowHeadersWidth = 51;
-      this.salesDGV.RowTemplate.Height = 24;
-      this.salesDGV.Size = new System.Drawing.Size(676, 404);
-      this.salesDGV.TabIndex = 0;
+      this.saleDTP.Location = new System.Drawing.Point(130, 44);
+      this.saleDTP.Name = "saleDTP";
+      this.saleDTP.Size = new System.Drawing.Size(300, 22);
+      this.saleDTP.TabIndex = 16;
+      // 
+      // saleGoodCB
+      // 
+      this.saleGoodCB.FormattingEnabled = true;
+      this.saleGoodCB.Location = new System.Drawing.Point(130, 10);
+      this.saleGoodCB.Name = "saleGoodCB";
+      this.saleGoodCB.Size = new System.Drawing.Size(300, 24);
+      this.saleGoodCB.TabIndex = 15;
       // 
       // addSaleButton
       // 
@@ -371,36 +372,34 @@ namespace WholesaleFirm
       this.label7.TabIndex = 10;
       this.label7.Text = "Good:";
       // 
-      // saleGoodCB
+      // groupBox4
       // 
-      this.saleGoodCB.FormattingEnabled = true;
-      this.saleGoodCB.Location = new System.Drawing.Point(130, 10);
-      this.saleGoodCB.Name = "saleGoodCB";
-      this.saleGoodCB.Size = new System.Drawing.Size(300, 24);
-      this.saleGoodCB.TabIndex = 15;
+      this.groupBox4.Controls.Add(this.salesDGV);
+      this.groupBox4.Location = new System.Drawing.Point(37, 84);
+      this.groupBox4.Name = "groupBox4";
+      this.groupBox4.Size = new System.Drawing.Size(840, 431);
+      this.groupBox4.TabIndex = 7;
+      this.groupBox4.TabStop = false;
+      this.groupBox4.Text = "Sales";
       // 
-      // saleDTP
+      // salesDGV
       // 
-      this.saleDTP.Location = new System.Drawing.Point(130, 44);
-      this.saleDTP.Name = "saleDTP";
-      this.saleDTP.Size = new System.Drawing.Size(300, 22);
-      this.saleDTP.TabIndex = 16;
+      this.salesDGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+      this.salesDGV.Location = new System.Drawing.Point(93, 21);
+      this.salesDGV.Name = "salesDGV";
+      this.salesDGV.RowHeadersWidth = 51;
+      this.salesDGV.RowTemplate.Height = 24;
+      this.salesDGV.Size = new System.Drawing.Size(676, 404);
+      this.salesDGV.TabIndex = 0;
       // 
-      // label8
+      // tabPage4
       // 
-      this.label8.AutoSize = true;
-      this.label8.Location = new System.Drawing.Point(480, 17);
-      this.label8.Name = "label8";
-      this.label8.Size = new System.Drawing.Size(49, 17);
-      this.label8.TabIndex = 17;
-      this.label8.Text = "Count:";
-      // 
-      // saleCountTB
-      // 
-      this.saleCountTB.Location = new System.Drawing.Point(578, 10);
-      this.saleCountTB.Name = "saleCountTB";
-      this.saleCountTB.Size = new System.Drawing.Size(299, 22);
-      this.saleCountTB.TabIndex = 18;
+      this.tabPage4.Location = new System.Drawing.Point(4, 25);
+      this.tabPage4.Name = "tabPage4";
+      this.tabPage4.Size = new System.Drawing.Size(923, 542);
+      this.tabPage4.TabIndex = 3;
+      this.tabPage4.Text = "Statistic";
+      this.tabPage4.UseVisualStyleBackColor = true;
       // 
       // ManagerForm
       // 
