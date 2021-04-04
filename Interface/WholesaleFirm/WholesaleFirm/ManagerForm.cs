@@ -100,25 +100,33 @@ namespace WholesaleFirm
       }
     }
 
-    private void insertIntoWarehouse(string warehouse)
+    private void insertIntoWarehouse(string warehouse, int id, int count)
     {
       string query =
         $"INSERT INTO {warehouse}(GOOD_ID, GOOD_COUNT) VALUES(:id, :count)";
 
       OracleCommand command = new OracleCommand(query, conn);
-      command.Parameters.Add(new OracleParameter("id", 1));
-      command.Parameters.Add(new OracleParameter("count", 99));
+      command.Parameters.Add(new OracleParameter("id", id));
+      command.Parameters.Add(new OracleParameter("count", count));
       command.ExecuteNonQuery();
     }
 
     private void warehousesButton_Click(object sender, EventArgs e)
     {
-      var goodId = Helpers.GetSelectedId(warehouseGoodCB);
+      if (warehouseGoodCB.SelectedItem == null || typeOfWarehouseCB.SelectedItem == null
+          || warehouseCountCB.Text == "")
+      {
+        MessageBox.Show("Invalid data!");
+        return;
+      }
+
+      int goodId = Helpers.GetSelectedId(warehouseGoodCB);
       string typeOfWarehouse = typeOfWarehouseCB.Text;
+      int count = -1;
 
       try
       {
-        int count = int.Parse(warehouseCountCB.Text);
+        count = int.Parse(warehouseCountCB.Text);
       }
       catch
       {
@@ -128,11 +136,15 @@ namespace WholesaleFirm
 
       if (typeOfWarehouse == "First warehouse")
       {
-
+        insertIntoWarehouse("WAREHOUSE1", goodId, count);
+        MessageBox.Show("Delivered to the warehouse1!");
+        setDataInWarehouses(warehouseQuery("WAREHOUSE1"), warehouse1DGV);
       }
       else if (typeOfWarehouse == "Second warehouse")
       {
-
+        insertIntoWarehouse("WAREHOUSE2", goodId, count);
+        MessageBox.Show("Delivered to the warehouse2!");
+        setDataInWarehouses(warehouseQuery("WAREHOUSE2"), warehouse2DGV);
       }
       else
       {
