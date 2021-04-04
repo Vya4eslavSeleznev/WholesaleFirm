@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Oracle.ManagedDataAccess.Client;
 using System.Configuration;
+using WholesaleFirm.Helper;
 
 namespace WholesaleFirm
 {
@@ -51,18 +52,17 @@ namespace WholesaleFirm
     private void setDataInWarehouses(string warehouseQuery, DataGridView dgv)
     {
       setData(warehouseQuery, dgv);
-      //dgv.Columns[0].Visible = false;
+      dgv.Columns[0].Visible = false;
     }
 
     private void setDataIntoWarehouseComboboxes()
     {
-      OracleCommand cmd = new OracleCommand("SELECT NAME FROM GOODS", conn);
+      OracleCommand cmd = new OracleCommand("SELECT ID, NAME, PRIORITY FROM GOODS", conn);
       OracleDataReader dr = cmd.ExecuteReader();
 
       while(dr.Read())
       {
-        string name = dr["NAME"].ToString();
-        warehouseGoodCB.Items.Add(name);
+        warehouseGoodCB.Items.Add(new Model.Good(dr.GetInt32(0), dr.GetString(1), dr.GetInt32(2)));
       }
 
       typeOfWarehouseCB.Items.Add("First warehouse");
@@ -72,16 +72,11 @@ namespace WholesaleFirm
     private string warehouseQuery(string warehouse)
     {
       return
-        "SELECT GOODS.NAME AS Name, GOODS.PRIORITY AS Priority, " + warehouse + ".GOOD_COUNT AS Count " +
-        "FROM " + warehouse +
-        " JOIN GOODS ON " + warehouse + ".GOOD_ID = GOODS.ID";
-
-      /*return
-        "SELECT " + warehouse + ".GOOD_ID, GOODS.NAME, SUM(GOOD_COUNT) AS Total " +
-        "FROM " + warehouse +
-        "JOIN GOODS ON " + warehouse + ".GOOD_ID = GOODS.ID " +
-        "GROUP BY " + warehouse + ".GOOD_ID, GOODS.NAME " +
-        "ORDER BY Total DESC";*/
+        $"SELECT {warehouse}.GOOD_ID, GOODS.NAME, SUM(GOOD_COUNT) AS Total " +
+        $"FROM {warehouse} " +
+        $"JOIN GOODS ON {warehouse}.GOOD_ID = GOODS.ID " +
+        $"GROUP BY {warehouse}.GOOD_ID, GOODS.NAME " +
+        "ORDER BY Total DESC";
     }
 
     private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
@@ -108,7 +103,7 @@ namespace WholesaleFirm
     private void insertIntoWarehouse(string warehouse)
     {
       string query =
-        "INSERT INTO " + warehouse + "(GOOD_ID, GOOD_COUNT) VALUES(:id, :count)";
+        $"INSERT INTO {warehouse}(GOOD_ID, GOOD_COUNT) VALUES(:id, :count)";
 
       OracleCommand command = new OracleCommand(query, conn);
       command.Parameters.Add(new OracleParameter("id", 1));
@@ -118,9 +113,18 @@ namespace WholesaleFirm
 
     private void warehousesButton_Click(object sender, EventArgs e)
     {
-      string good = warehouseGoodCB.Text;
-      string count = warehouseCountCB.Text;
+      var goodId = Helpers.GetSelectedId(warehouseGoodCB);
       string typeOfWarehouse = typeOfWarehouseCB.Text;
+
+      try
+      {
+        int count = int.Parse(warehouseCountCB.Text);
+      }
+      catch
+      {
+        MessageBox.Show("Invalid count!");
+        return;
+      }
 
       if (typeOfWarehouse == "First warehouse")
       {
