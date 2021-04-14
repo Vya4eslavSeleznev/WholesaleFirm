@@ -64,6 +64,8 @@ namespace WholesaleFirm
       this.groupBox4 = new System.Windows.Forms.GroupBox();
       this.salesDGV = new System.Windows.Forms.DataGridView();
       this.tabPage4 = new System.Windows.Forms.TabPage();
+      this.deleteWarehouse1Button = new System.Windows.Forms.Button();
+      this.deleteWarehouse2Button = new System.Windows.Forms.Button();
       this.tabControl1.SuspendLayout();
       this.tabPage1.SuspendLayout();
       this.groupBox2.SuspendLayout();
@@ -93,6 +95,8 @@ namespace WholesaleFirm
       // 
       // tabPage1
       // 
+      this.tabPage1.Controls.Add(this.deleteWarehouse2Button);
+      this.tabPage1.Controls.Add(this.deleteWarehouse1Button);
       this.tabPage1.Controls.Add(this.typeOfWarehouseCB);
       this.tabPage1.Controls.Add(this.label5);
       this.tabPage1.Controls.Add(this.warehouseCountCB);
@@ -165,7 +169,7 @@ namespace WholesaleFirm
       this.groupBox2.Controls.Add(this.warehouse2DGV);
       this.groupBox2.Location = new System.Drawing.Point(467, 71);
       this.groupBox2.Name = "groupBox2";
-      this.groupBox2.Size = new System.Drawing.Size(416, 447);
+      this.groupBox2.Size = new System.Drawing.Size(416, 418);
       this.groupBox2.TabIndex = 3;
       this.groupBox2.TabStop = false;
       this.groupBox2.Text = "Warehouse 2:";
@@ -177,7 +181,7 @@ namespace WholesaleFirm
       this.warehouse2DGV.Name = "warehouse2DGV";
       this.warehouse2DGV.RowHeadersWidth = 51;
       this.warehouse2DGV.RowTemplate.Height = 24;
-      this.warehouse2DGV.Size = new System.Drawing.Size(400, 420);
+      this.warehouse2DGV.Size = new System.Drawing.Size(400, 390);
       this.warehouse2DGV.TabIndex = 0;
       // 
       // groupBox1
@@ -185,7 +189,7 @@ namespace WholesaleFirm
       this.groupBox1.Controls.Add(this.warehouse1DGV);
       this.groupBox1.Location = new System.Drawing.Point(31, 71);
       this.groupBox1.Name = "groupBox1";
-      this.groupBox1.Size = new System.Drawing.Size(415, 447);
+      this.groupBox1.Size = new System.Drawing.Size(415, 418);
       this.groupBox1.TabIndex = 2;
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "Warehouse 1:";
@@ -197,7 +201,7 @@ namespace WholesaleFirm
       this.warehouse1DGV.Name = "warehouse1DGV";
       this.warehouse1DGV.RowHeadersWidth = 51;
       this.warehouse1DGV.RowTemplate.Height = 24;
-      this.warehouse1DGV.Size = new System.Drawing.Size(400, 420);
+      this.warehouse1DGV.Size = new System.Drawing.Size(400, 390);
       this.warehouse1DGV.TabIndex = 0;
       // 
       // warehousesButton
@@ -427,6 +431,26 @@ namespace WholesaleFirm
       this.tabPage4.Text = "Statistic";
       this.tabPage4.UseVisualStyleBackColor = true;
       // 
+      // deleteWarehouse1Button
+      // 
+      this.deleteWarehouse1Button.Location = new System.Drawing.Point(37, 495);
+      this.deleteWarehouse1Button.Name = "deleteWarehouse1Button";
+      this.deleteWarehouse1Button.Size = new System.Drawing.Size(400, 37);
+      this.deleteWarehouse1Button.TabIndex = 10;
+      this.deleteWarehouse1Button.Text = "Delete selected from warehouse 1";
+      this.deleteWarehouse1Button.UseVisualStyleBackColor = true;
+      this.deleteWarehouse1Button.Click += new System.EventHandler(this.deleteWarehouse1Button_Click);
+      // 
+      // deleteWarehouse2Button
+      // 
+      this.deleteWarehouse2Button.Location = new System.Drawing.Point(473, 495);
+      this.deleteWarehouse2Button.Name = "deleteWarehouse2Button";
+      this.deleteWarehouse2Button.Size = new System.Drawing.Size(400, 37);
+      this.deleteWarehouse2Button.TabIndex = 11;
+      this.deleteWarehouse2Button.Text = "Delete selected from warehouse 2";
+      this.deleteWarehouse2Button.UseVisualStyleBackColor = true;
+      this.deleteWarehouse2Button.Click += new System.EventHandler(this.deleteWarehouse2Button_Click);
+      // 
       // ManagerForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -494,5 +518,7 @@ namespace WholesaleFirm
     private System.Windows.Forms.DataGridView salesDGV;
     private System.Windows.Forms.Button deleteSalesButton;
     private System.Windows.Forms.Button deleteGoodsButton;
+    private System.Windows.Forms.Button deleteWarehouse2Button;
+    private System.Windows.Forms.Button deleteWarehouse1Button;
   }
 }

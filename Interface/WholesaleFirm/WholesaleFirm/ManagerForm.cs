@@ -125,12 +125,14 @@ namespace WholesaleFirm
         insertIntoWarehouse("WAREHOUSE1", goodId, count);
         MessageBox.Show("Delivered to the warehouse1!");
         setData(warehouseQuery("WAREHOUSE1"), warehouse1DGV);
+        addCheckBoxInDataGrid("Select to delete", warehouse1DGV);
       }
       else if (typeOfWarehouse == "Second warehouse")
       {
         insertIntoWarehouse("WAREHOUSE2", goodId, count);
         MessageBox.Show("Delivered to the warehouse2!");
         setData(warehouseQuery("WAREHOUSE2"), warehouse2DGV);
+        addCheckBoxInDataGrid("Select to delete", warehouse2DGV);
       }
       else
       {
@@ -224,17 +226,13 @@ namespace WholesaleFirm
 
     private void addButtons()
     {
-      //addButtonInDataGrid(warehouse1DGV, "Click to edit", "Edit", "editButton");
-      //addButtonInDataGrid(warehouse2DGV, "Click to edit", "Edit", "editButton");
-      //addButtonInDataGrid(warehouse1DGV, "Click to delete", "Delete", "deleteButton");
-      //addButtonInDataGrid(warehouse2DGV, "Click to delete", "Delete", "deleteButton");
+      addCheckBoxInDataGrid("Select to delete", warehouse1DGV);
+      addCheckBoxInDataGrid("Select to delete", warehouse2DGV);
 
       addButtonInDataGrid(goodDGV, "Click to edit", "Edit", "editButton");
-      //addButtonInDataGrid(goodDGV, "Click to delete", "Delete", "deleteButton");
       addCheckBoxInDataGrid("Select to delete", goodDGV);
 
       addButtonInDataGrid(salesDGV, "Click to edit", "Edit", "editButton");
-      //addButtonInDataGrid(salesDGV, "Click to delete", "Delete", "deleteButton");
       addCheckBoxInDataGrid("Select to delete", salesDGV);
     }
 
@@ -247,30 +245,26 @@ namespace WholesaleFirm
       dataGrid.Columns.Insert(0, check);
     }
 
-    private void deleteSalesButton_Click(object sender, EventArgs e)
+    private void deleteRecord(DataGridView dgv, string column, string message,
+                              string title, string table, string queryMethod)
     {
-
-    }
-
-    private void deleteGoodsButton_Click(object sender, EventArgs e)
-    {
-      List<int> goodIds = null;
+      List<int> ids = null;
 
       try
       {
-        goodIds = (from DataGridViewRow r in goodDGV.Rows
-                      where (string)r.Cells[0].Value == "1"
-                      select int.Parse(r.Cells["ID"].Value.ToString())).ToList();
+        ids = (from DataGridViewRow r in dgv.Rows
+               where (string)r.Cells[0].Value == "1"
+               select int.Parse(r.Cells[column].Value.ToString())).ToList();
       }
       catch
       {
-        MessageBox.Show("Incorrect good111111111111!", "Goods", MessageBoxButtons.OK);
+        MessageBox.Show(message, title, MessageBoxButtons.OK);
         return;
       }
 
       string query =
-        "DELETE FROM GOODS " +
-        $"WHERE ID IN ({string.Join(",", goodIds)})";
+        "DELETE FROM " + table +
+        " WHERE " + column + $" IN ({string.Join(",", ids)})";
 
       try
       {
@@ -281,12 +275,22 @@ namespace WholesaleFirm
       }
       catch
       {
-        MessageBox.Show("Incorrect good222222222222222!", "Goods", MessageBoxButtons.OK);
+        MessageBox.Show(message, title, MessageBoxButtons.OK);
         return;
       }
 
-      setData(goodQuery(), goodDGV);
-      addCheckBoxInDataGrid("Select to delete", goodDGV);
+      setData(queryMethod, dgv);
+      addCheckBoxInDataGrid("Select to delete", dgv);
+    }
+
+    private void deleteSalesButton_Click(object sender, EventArgs e)
+    {
+      deleteRecord(salesDGV, "ID", "Incorrect sale!", "Sales", "SALES", saleQuery());
+    }
+
+    private void deleteGoodsButton_Click(object sender, EventArgs e)
+    {
+      deleteRecord(goodDGV, "ID", "Incorrect good!", "Goods", "GOODS", goodQuery());
       RefreshCombobox(warehouseGoodCB);
       RefreshCombobox(saleGoodCB);
     }
@@ -320,6 +324,21 @@ namespace WholesaleFirm
           MessageBox.Show("Incorrect parameters!", "Good", MessageBoxButtons.OK);
         }
       }
+
+      setData(goodQuery(), goodDGV);
+      addCheckBoxInDataGrid("Select to delete", goodDGV);
+    }
+
+    private void deleteWarehouse1Button_Click(object sender, EventArgs e)
+    {
+      deleteRecord(warehouse1DGV, "GOOD_ID", "Incorrect good in warehouse 1!", "Warehouse 1",
+                  "WAREHOUSE1", warehouseQuery("WAREHOUSE1"));
+    }
+
+    private void deleteWarehouse2Button_Click(object sender, EventArgs e)
+    {
+      deleteRecord(warehouse2DGV, "GOOD_ID", "Incorrect good in warehouse 2!", "Warehouse 2",
+                  "WAREHOUSE2", warehouseQuery("WAREHOUSE2"));
     }
   }
 }
