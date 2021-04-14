@@ -56,12 +56,13 @@ namespace WholesaleFirm
       DataTable dataTable = new DataTable();
       dataAdapter.Fill(dataTable);
       dgv.DataSource = dataTable;
+      dgv.Columns[0].Visible = false;
     }
 
-    private void setDataInWarehouses(string warehouseQuery, DataGridView dgv)
+    private void setDataInWarehouses(string query, DataGridView dgv)
     {
-      setData(warehouseQuery, dgv);
-      dgv.Columns[0].Visible = false;
+      setData(query, dgv);
+      //dgv.Columns[1].Visible = false;
     }
 
     private void setDataIntoGoodComboboxes(ComboBox cb)
@@ -123,13 +124,13 @@ namespace WholesaleFirm
       {
         insertIntoWarehouse("WAREHOUSE1", goodId, count);
         MessageBox.Show("Delivered to the warehouse1!");
-        setDataInWarehouses(warehouseQuery("WAREHOUSE1"), warehouse1DGV);
+        setData(warehouseQuery("WAREHOUSE1"), warehouse1DGV);
       }
       else if (typeOfWarehouse == "Second warehouse")
       {
         insertIntoWarehouse("WAREHOUSE2", goodId, count);
         MessageBox.Show("Delivered to the warehouse2!");
-        setDataInWarehouses(warehouseQuery("WAREHOUSE2"), warehouse2DGV);
+        setData(warehouseQuery("WAREHOUSE2"), warehouse2DGV);
       }
       else
       {
@@ -140,14 +141,13 @@ namespace WholesaleFirm
     private string goodQuery()
     {
       return
-        "SELECT NAME, PRIORITY " +
-        "FROM GOODS";
+        "SELECT ID, NAME, PRIORITY FROM GOODS";
     }
 
     private string saleQuery()
     {
       return
-        "SELECT GOODS.NAME, SALES.GOOD_COUNT, SALES.CREATE_DATE " +
+        "SELECT SALES.ID, GOODS.NAME, SALES.GOOD_COUNT, SALES.CREATE_DATE " +
         "FROM SALES " +
         "JOIN GOODS ON SALES.GOOD_ID = GOODS.ID";
     }
@@ -166,17 +166,24 @@ namespace WholesaleFirm
       command.ExecuteNonQuery();
 
       setData(goodQuery(), goodDGV);
-
-      //UPDATE COMBOBOXES
+      addCheckBoxInDataGrid("Select to delete", goodDGV);
+      RefreshCombobox(warehouseGoodCB);
+      RefreshCombobox(saleGoodCB);
 
       MessageBox.Show("The good was successfully added!");
+    }
+
+    private void RefreshCombobox(ComboBox comboBox)
+    {
+      comboBox.Items.Clear();
+      setDataIntoGoodComboboxes(comboBox);
     }
 
     private void addSaleButton_Click(object sender, EventArgs e)
     {
       //VALIDATION
 
-      var date = saleDTP.Value.Date.ToString("yyyy / MM / dd");
+      var date = saleDTP.Value.Date.ToString("dd.MM.yy");
       int goodId = Helpers.GetSelectedId(saleGoodCB);
       int count = -1;
 
@@ -191,16 +198,18 @@ namespace WholesaleFirm
       }
 
       string query =
-        "INSERT INTO SALE(GOOD_ID, GOOD_COUNT, CREATE_DATE) VALUES(:id, :count, :date)";
+        "INSERT INTO SALES(GOOD_ID, GOOD_COUNT, CREATE_DATE) VALUES(:id, :count, :dt)";
 
       OracleCommand command = new OracleCommand(query, conn);
       command.Parameters.Add(new OracleParameter("id", goodId));
       command.Parameters.Add(new OracleParameter("count", count));
-      command.Parameters.Add(new OracleParameter("date", date));
+      command.Parameters.Add(new OracleParameter("dt", date));
       command.ExecuteNonQuery();
 
       MessageBox.Show("Sale added successfully!");
+
       setData(saleQuery(), salesDGV);
+      addCheckBoxInDataGrid("Select to delete", salesDGV);
     }
 
     private void addButtonInDataGrid(DataGridView dataGrid, string headerText, string buttonText, string buttonName)
@@ -215,16 +224,102 @@ namespace WholesaleFirm
 
     private void addButtons()
     {
-      addButtonInDataGrid(warehouse1DGV, "Click to edit", "Edit", "editButton");
-      addButtonInDataGrid(warehouse2DGV, "Click to edit", "Edit", "editButton");
-      addButtonInDataGrid(warehouse1DGV, "Click to delete", "Delete", "deleteButton");
-      addButtonInDataGrid(warehouse2DGV, "Click to delete", "Delete", "deleteButton");
+      //addButtonInDataGrid(warehouse1DGV, "Click to edit", "Edit", "editButton");
+      //addButtonInDataGrid(warehouse2DGV, "Click to edit", "Edit", "editButton");
+      //addButtonInDataGrid(warehouse1DGV, "Click to delete", "Delete", "deleteButton");
+      //addButtonInDataGrid(warehouse2DGV, "Click to delete", "Delete", "deleteButton");
 
       addButtonInDataGrid(goodDGV, "Click to edit", "Edit", "editButton");
-      addButtonInDataGrid(goodDGV, "Click to delete", "Delete", "deleteButton");
+      //addButtonInDataGrid(goodDGV, "Click to delete", "Delete", "deleteButton");
+      addCheckBoxInDataGrid("Select to delete", goodDGV);
 
       addButtonInDataGrid(salesDGV, "Click to edit", "Edit", "editButton");
-      addButtonInDataGrid(salesDGV, "Click to delete", "Delete", "deleteButton");
+      //addButtonInDataGrid(salesDGV, "Click to delete", "Delete", "deleteButton");
+      addCheckBoxInDataGrid("Select to delete", salesDGV);
+    }
+
+    private void addCheckBoxInDataGrid(string headerText, DataGridView dataGrid)
+    {
+      DataGridViewCheckBoxColumn check = new DataGridViewCheckBoxColumn();
+      check.HeaderText = headerText;
+      check.FalseValue = "0";
+      check.TrueValue = "1";
+      dataGrid.Columns.Insert(0, check);
+    }
+
+    private void deleteSalesButton_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void deleteGoodsButton_Click(object sender, EventArgs e)
+    {
+      List<int> goodIds = null;
+
+      try
+      {
+        goodIds = (from DataGridViewRow r in goodDGV.Rows
+                      where (string)r.Cells[0].Value == "1"
+                      select int.Parse(r.Cells["ID"].Value.ToString())).ToList();
+      }
+      catch
+      {
+        MessageBox.Show("Incorrect good111111111111!", "Goods", MessageBoxButtons.OK);
+        return;
+      }
+
+      string query =
+        "DELETE FROM GOODS " +
+        $"WHERE ID IN ({string.Join(",", goodIds)})";
+
+      try
+      {
+        using (var cmd = new OracleCommand(query, conn))
+        {
+          cmd.ExecuteNonQuery();
+        }
+      }
+      catch
+      {
+        MessageBox.Show("Incorrect good222222222222222!", "Goods", MessageBoxButtons.OK);
+        return;
+      }
+
+      setData(goodQuery(), goodDGV);
+      addCheckBoxInDataGrid("Select to delete", goodDGV);
+      RefreshCombobox(warehouseGoodCB);
+      RefreshCombobox(saleGoodCB);
+    }
+
+    private void forecastButton_Click(object sender, EventArgs e)
+    {
+      using (var demand = new Demand(conn))
+      {
+        demand.ShowDialog();
+      }
+    }
+
+    private void goodDGV_CellContentClick(object sender, DataGridViewCellEventArgs e)
+    {
+      var senderGrid = (DataGridView)sender;
+
+      if (senderGrid.Columns[e.ColumnIndex] is DataGridViewButtonColumn && e.RowIndex >= 0)
+      {
+        try
+        {
+          var goodId = int.Parse(goodDGV.Rows[e.RowIndex].Cells["ID"].Value.ToString());
+          MessageBox.Show(goodDGV.Rows[e.RowIndex].Cells["ID"].Value.ToString(), "Good", MessageBoxButtons.OK);
+
+          using (var good = new Good(goodId, conn))
+          {
+            good.ShowDialog();
+          }
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show("Incorrect parameters!", "Good", MessageBoxButtons.OK);
+        }
+      }
     }
   }
 }

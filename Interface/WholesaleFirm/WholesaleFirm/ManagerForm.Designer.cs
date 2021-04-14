@@ -43,6 +43,7 @@ namespace WholesaleFirm
       this.warehouse1DGV = new System.Windows.Forms.DataGridView();
       this.warehousesButton = new System.Windows.Forms.Button();
       this.tabPage2 = new System.Windows.Forms.TabPage();
+      this.deleteGoodsButton = new System.Windows.Forms.Button();
       this.goodPriorityNUD = new System.Windows.Forms.NumericUpDown();
       this.forecastButton = new System.Windows.Forms.Button();
       this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -52,6 +53,7 @@ namespace WholesaleFirm
       this.label2 = new System.Windows.Forms.Label();
       this.label1 = new System.Windows.Forms.Label();
       this.tabPage3 = new System.Windows.Forms.TabPage();
+      this.deleteSalesButton = new System.Windows.Forms.Button();
       this.saleCountTB = new System.Windows.Forms.TextBox();
       this.label8 = new System.Windows.Forms.Label();
       this.saleDTP = new System.Windows.Forms.DateTimePicker();
@@ -210,6 +212,7 @@ namespace WholesaleFirm
       // 
       // tabPage2
       // 
+      this.tabPage2.Controls.Add(this.deleteGoodsButton);
       this.tabPage2.Controls.Add(this.goodPriorityNUD);
       this.tabPage2.Controls.Add(this.forecastButton);
       this.tabPage2.Controls.Add(this.groupBox3);
@@ -224,6 +227,16 @@ namespace WholesaleFirm
       this.tabPage2.TabIndex = 1;
       this.tabPage2.Text = "Goods";
       this.tabPage2.UseVisualStyleBackColor = true;
+      // 
+      // deleteGoodsButton
+      // 
+      this.deleteGoodsButton.Location = new System.Drawing.Point(132, 502);
+      this.deleteGoodsButton.Name = "deleteGoodsButton";
+      this.deleteGoodsButton.Size = new System.Drawing.Size(676, 34);
+      this.deleteGoodsButton.TabIndex = 10;
+      this.deleteGoodsButton.Text = "Delete selected";
+      this.deleteGoodsButton.UseVisualStyleBackColor = true;
+      this.deleteGoodsButton.Click += new System.EventHandler(this.deleteGoodsButton_Click);
       // 
       // goodPriorityNUD
       // 
@@ -240,13 +253,14 @@ namespace WholesaleFirm
       this.forecastButton.TabIndex = 7;
       this.forecastButton.Text = "Forecast demand";
       this.forecastButton.UseVisualStyleBackColor = true;
+      this.forecastButton.Click += new System.EventHandler(this.forecastButton_Click);
       // 
       // groupBox3
       // 
       this.groupBox3.Controls.Add(this.goodDGV);
       this.groupBox3.Location = new System.Drawing.Point(39, 81);
       this.groupBox3.Name = "groupBox3";
-      this.groupBox3.Size = new System.Drawing.Size(840, 431);
+      this.groupBox3.Size = new System.Drawing.Size(840, 415);
       this.groupBox3.TabIndex = 6;
       this.groupBox3.TabStop = false;
       this.groupBox3.Text = "Goods";
@@ -258,8 +272,9 @@ namespace WholesaleFirm
       this.goodDGV.Name = "goodDGV";
       this.goodDGV.RowHeadersWidth = 51;
       this.goodDGV.RowTemplate.Height = 24;
-      this.goodDGV.Size = new System.Drawing.Size(676, 404);
+      this.goodDGV.Size = new System.Drawing.Size(676, 380);
       this.goodDGV.TabIndex = 0;
+      this.goodDGV.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.goodDGV_CellContentClick);
       // 
       // addGoodButton
       // 
@@ -298,6 +313,7 @@ namespace WholesaleFirm
       // 
       // tabPage3
       // 
+      this.tabPage3.Controls.Add(this.deleteSalesButton);
       this.tabPage3.Controls.Add(this.saleCountTB);
       this.tabPage3.Controls.Add(this.label8);
       this.tabPage3.Controls.Add(this.saleDTP);
@@ -312,6 +328,16 @@ namespace WholesaleFirm
       this.tabPage3.TabIndex = 2;
       this.tabPage3.Text = "Sales";
       this.tabPage3.UseVisualStyleBackColor = true;
+      // 
+      // deleteSalesButton
+      // 
+      this.deleteSalesButton.Location = new System.Drawing.Point(130, 500);
+      this.deleteSalesButton.Name = "deleteSalesButton";
+      this.deleteSalesButton.Size = new System.Drawing.Size(676, 32);
+      this.deleteSalesButton.TabIndex = 19;
+      this.deleteSalesButton.Text = "Delete selected";
+      this.deleteSalesButton.UseVisualStyleBackColor = true;
+      this.deleteSalesButton.Click += new System.EventHandler(this.deleteSalesButton_Click);
       // 
       // saleCountTB
       // 
@@ -377,7 +403,7 @@ namespace WholesaleFirm
       this.groupBox4.Controls.Add(this.salesDGV);
       this.groupBox4.Location = new System.Drawing.Point(37, 84);
       this.groupBox4.Name = "groupBox4";
-      this.groupBox4.Size = new System.Drawing.Size(840, 431);
+      this.groupBox4.Size = new System.Drawing.Size(840, 410);
       this.groupBox4.TabIndex = 7;
       this.groupBox4.TabStop = false;
       this.groupBox4.Text = "Sales";
@@ -389,7 +415,7 @@ namespace WholesaleFirm
       this.salesDGV.Name = "salesDGV";
       this.salesDGV.RowHeadersWidth = 51;
       this.salesDGV.RowTemplate.Height = 24;
-      this.salesDGV.Size = new System.Drawing.Size(676, 404);
+      this.salesDGV.Size = new System.Drawing.Size(676, 375);
       this.salesDGV.TabIndex = 0;
       // 
       // tabPage4
@@ -409,7 +435,7 @@ namespace WholesaleFirm
       this.Controls.Add(this.tabControl1);
       this.Name = "ManagerForm";
       this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-      this.Text = "ManagerForm";
+      this.Text = "Manager";
       this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ManagerForm_FormClosing);
       this.tabControl1.ResumeLayout(false);
       this.tabPage1.ResumeLayout(false);
@@ -466,5 +492,7 @@ namespace WholesaleFirm
     private System.Windows.Forms.Label label7;
     private System.Windows.Forms.GroupBox groupBox4;
     private System.Windows.Forms.DataGridView salesDGV;
+    private System.Windows.Forms.Button deleteSalesButton;
+    private System.Windows.Forms.Button deleteGoodsButton;
   }
 }
