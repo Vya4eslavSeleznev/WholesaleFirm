@@ -32,8 +32,8 @@ namespace WholesaleFirm
         return;
       }
 
-      setDataInWarehouses(warehouseQuery("WAREHOUSE1"), warehouse1DGV);
-      setDataInWarehouses(warehouseQuery("WAREHOUSE2"), warehouse2DGV);
+      setData(warehouseQuery("WAREHOUSE1"), warehouse1DGV);
+      setData(warehouseQuery("WAREHOUSE2"), warehouse2DGV);
       setData(goodQuery(), goodDGV);
       setData(saleQuery(), salesDGV);
       addButtons();
@@ -57,12 +57,6 @@ namespace WholesaleFirm
       dataAdapter.Fill(dataTable);
       dgv.DataSource = dataTable;
       dgv.Columns[0].Visible = false;
-    }
-
-    private void setDataInWarehouses(string query, DataGridView dgv)
-    {
-      setData(query, dgv);
-      //dgv.Columns[1].Visible = false;
     }
 
     private void setDataIntoGoodComboboxes(ComboBox cb)
@@ -100,7 +94,7 @@ namespace WholesaleFirm
     private void warehousesButton_Click(object sender, EventArgs e)
     {
       if (warehouseGoodCB.SelectedItem == null || typeOfWarehouseCB.SelectedItem == null
-          || warehouseCountCB.Text == "")
+          || warehouseCountTextBox.Text == "")
       {
         MessageBox.Show("Invalid data!");
         return;
@@ -112,7 +106,7 @@ namespace WholesaleFirm
 
       try
       {
-        count = int.Parse(warehouseCountCB.Text);
+        count = int.Parse(warehouseCountTextBox.Text);
       }
       catch
       {
@@ -156,6 +150,12 @@ namespace WholesaleFirm
 
     private void addGoodButton_Click(object sender, EventArgs e)
     {
+      if (goodNameTextBox.Text == "")
+      {
+        MessageBox.Show("Empty name field!");
+        return;
+      }
+
       string name = goodNameTextBox.Text;
       int priority = Convert.ToInt32(goodPriorityNUD.Value);
 
@@ -183,7 +183,12 @@ namespace WholesaleFirm
 
     private void addSaleButton_Click(object sender, EventArgs e)
     {
-      //VALIDATION
+      if (saleGoodCB.SelectedItem == null || saleCountTB.Text == ""
+          || saleDTP.Text == "")
+      {
+        MessageBox.Show("Invalid data!");
+        return;
+      }
 
       var date = saleDTP.Value.Date.ToString("dd.MM.yy");
       int goodId = Helpers.GetSelectedId(saleGoodCB);
@@ -206,7 +211,16 @@ namespace WholesaleFirm
       command.Parameters.Add(new OracleParameter("id", goodId));
       command.Parameters.Add(new OracleParameter("count", count));
       command.Parameters.Add(new OracleParameter("dt", date));
-      command.ExecuteNonQuery();
+
+      try
+      {
+        command.ExecuteNonQuery();
+      }
+      catch
+      {
+        MessageBox.Show("Not enough goods!");
+        return;
+      }
 
       MessageBox.Show("Sale added successfully!");
 
@@ -312,14 +326,13 @@ namespace WholesaleFirm
         try
         {
           var goodId = int.Parse(goodDGV.Rows[e.RowIndex].Cells["ID"].Value.ToString());
-          MessageBox.Show(goodDGV.Rows[e.RowIndex].Cells["ID"].Value.ToString(), "Good", MessageBoxButtons.OK);
 
           using (var good = new Good(goodId, conn))
           {
             good.ShowDialog();
           }
         }
-        catch (Exception ex)
+        catch
         {
           MessageBox.Show("Incorrect parameters!", "Good", MessageBoxButtons.OK);
         }
@@ -327,6 +340,11 @@ namespace WholesaleFirm
 
       setData(goodQuery(), goodDGV);
       addCheckBoxInDataGrid("Select to delete", goodDGV);
+      RefreshCombobox(warehouseGoodCB);
+      RefreshCombobox(saleGoodCB);
+      setData(warehouseQuery("WAREHOUSE1"), warehouse1DGV);
+      setData(warehouseQuery("WAREHOUSE2"), warehouse2DGV);
+      setData(saleQuery(), salesDGV);
     }
 
     private void deleteWarehouse1Button_Click(object sender, EventArgs e)
@@ -339,6 +357,31 @@ namespace WholesaleFirm
     {
       deleteRecord(warehouse2DGV, "GOOD_ID", "Incorrect good in warehouse 2!", "Warehouse 2",
                   "WAREHOUSE2", warehouseQuery("WAREHOUSE2"));
+    }
+
+    private void salesDGV_CellContentClick(object sender, DataGridViewCellEventArgs e)
+    {
+      var senderGrid = (DataGridView)sender;
+
+      if (senderGrid.Columns[e.ColumnIndex] is DataGridViewButtonColumn && e.RowIndex >= 0)
+      {
+        try
+        {
+          var salesId = int.Parse(salesDGV.Rows[e.RowIndex].Cells["ID"].Value.ToString());
+
+          using (var sale = new Sale(salesId, conn))
+          {
+            sale.ShowDialog();
+          }
+        }
+        catch
+        {
+          MessageBox.Show("Incorrect parameters!", "Sales", MessageBoxButtons.OK);
+        }
+      }
+
+      setData(saleQuery(), salesDGV);
+      addCheckBoxInDataGrid("Select to delete", salesDGV);
     }
   }
 }

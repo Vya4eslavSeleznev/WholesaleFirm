@@ -31,9 +31,11 @@ namespace WholesaleFirm
     {
       this.tabControl1 = new System.Windows.Forms.TabControl();
       this.tabPage1 = new System.Windows.Forms.TabPage();
+      this.deleteWarehouse2Button = new System.Windows.Forms.Button();
+      this.deleteWarehouse1Button = new System.Windows.Forms.Button();
       this.typeOfWarehouseCB = new System.Windows.Forms.ComboBox();
       this.label5 = new System.Windows.Forms.Label();
-      this.warehouseCountCB = new System.Windows.Forms.TextBox();
+      this.warehouseCountTextBox = new System.Windows.Forms.TextBox();
       this.label4 = new System.Windows.Forms.Label();
       this.warehouseGoodCB = new System.Windows.Forms.ComboBox();
       this.label3 = new System.Windows.Forms.Label();
@@ -64,8 +66,6 @@ namespace WholesaleFirm
       this.groupBox4 = new System.Windows.Forms.GroupBox();
       this.salesDGV = new System.Windows.Forms.DataGridView();
       this.tabPage4 = new System.Windows.Forms.TabPage();
-      this.deleteWarehouse1Button = new System.Windows.Forms.Button();
-      this.deleteWarehouse2Button = new System.Windows.Forms.Button();
       this.tabControl1.SuspendLayout();
       this.tabPage1.SuspendLayout();
       this.groupBox2.SuspendLayout();
@@ -99,7 +99,7 @@ namespace WholesaleFirm
       this.tabPage1.Controls.Add(this.deleteWarehouse1Button);
       this.tabPage1.Controls.Add(this.typeOfWarehouseCB);
       this.tabPage1.Controls.Add(this.label5);
-      this.tabPage1.Controls.Add(this.warehouseCountCB);
+      this.tabPage1.Controls.Add(this.warehouseCountTextBox);
       this.tabPage1.Controls.Add(this.label4);
       this.tabPage1.Controls.Add(this.warehouseGoodCB);
       this.tabPage1.Controls.Add(this.label3);
@@ -113,6 +113,26 @@ namespace WholesaleFirm
       this.tabPage1.TabIndex = 0;
       this.tabPage1.Text = "Warehouses";
       this.tabPage1.UseVisualStyleBackColor = true;
+      // 
+      // deleteWarehouse2Button
+      // 
+      this.deleteWarehouse2Button.Location = new System.Drawing.Point(473, 495);
+      this.deleteWarehouse2Button.Name = "deleteWarehouse2Button";
+      this.deleteWarehouse2Button.Size = new System.Drawing.Size(400, 37);
+      this.deleteWarehouse2Button.TabIndex = 11;
+      this.deleteWarehouse2Button.Text = "Delete selected from warehouse 2";
+      this.deleteWarehouse2Button.UseVisualStyleBackColor = true;
+      this.deleteWarehouse2Button.Click += new System.EventHandler(this.deleteWarehouse2Button_Click);
+      // 
+      // deleteWarehouse1Button
+      // 
+      this.deleteWarehouse1Button.Location = new System.Drawing.Point(37, 495);
+      this.deleteWarehouse1Button.Name = "deleteWarehouse1Button";
+      this.deleteWarehouse1Button.Size = new System.Drawing.Size(400, 37);
+      this.deleteWarehouse1Button.TabIndex = 10;
+      this.deleteWarehouse1Button.Text = "Delete selected from warehouse 1";
+      this.deleteWarehouse1Button.UseVisualStyleBackColor = true;
+      this.deleteWarehouse1Button.Click += new System.EventHandler(this.deleteWarehouse1Button_Click);
       // 
       // typeOfWarehouseCB
       // 
@@ -131,12 +151,12 @@ namespace WholesaleFirm
       this.label5.TabIndex = 8;
       this.label5.Text = "Select the warehouse:";
       // 
-      // warehouseCountCB
+      // warehouseCountTextBox
       // 
-      this.warehouseCountCB.Location = new System.Drawing.Point(582, 6);
-      this.warehouseCountCB.Name = "warehouseCountCB";
-      this.warehouseCountCB.Size = new System.Drawing.Size(291, 22);
-      this.warehouseCountCB.TabIndex = 7;
+      this.warehouseCountTextBox.Location = new System.Drawing.Point(582, 6);
+      this.warehouseCountTextBox.Name = "warehouseCountTextBox";
+      this.warehouseCountTextBox.Size = new System.Drawing.Size(291, 22);
+      this.warehouseCountTextBox.TabIndex = 7;
       // 
       // label4
       // 
@@ -421,6 +441,7 @@ namespace WholesaleFirm
       this.salesDGV.RowTemplate.Height = 24;
       this.salesDGV.Size = new System.Drawing.Size(676, 375);
       this.salesDGV.TabIndex = 0;
+      this.salesDGV.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.salesDGV_CellContentClick);
       // 
       // tabPage4
       // 
@@ -430,26 +451,6 @@ namespace WholesaleFirm
       this.tabPage4.TabIndex = 3;
       this.tabPage4.Text = "Statistic";
       this.tabPage4.UseVisualStyleBackColor = true;
-      // 
-      // deleteWarehouse1Button
-      // 
-      this.deleteWarehouse1Button.Location = new System.Drawing.Point(37, 495);
-      this.deleteWarehouse1Button.Name = "deleteWarehouse1Button";
-      this.deleteWarehouse1Button.Size = new System.Drawing.Size(400, 37);
-      this.deleteWarehouse1Button.TabIndex = 10;
-      this.deleteWarehouse1Button.Text = "Delete selected from warehouse 1";
-      this.deleteWarehouse1Button.UseVisualStyleBackColor = true;
-      this.deleteWarehouse1Button.Click += new System.EventHandler(this.deleteWarehouse1Button_Click);
-      // 
-      // deleteWarehouse2Button
-      // 
-      this.deleteWarehouse2Button.Location = new System.Drawing.Point(473, 495);
-      this.deleteWarehouse2Button.Name = "deleteWarehouse2Button";
-      this.deleteWarehouse2Button.Size = new System.Drawing.Size(400, 37);
-      this.deleteWarehouse2Button.TabIndex = 11;
-      this.deleteWarehouse2Button.Text = "Delete selected from warehouse 2";
-      this.deleteWarehouse2Button.UseVisualStyleBackColor = true;
-      this.deleteWarehouse2Button.Click += new System.EventHandler(this.deleteWarehouse2Button_Click);
       // 
       // ManagerForm
       // 
@@ -500,7 +501,7 @@ namespace WholesaleFirm
     private System.Windows.Forms.GroupBox groupBox1;
     private System.Windows.Forms.ComboBox typeOfWarehouseCB;
     private System.Windows.Forms.Label label5;
-    private System.Windows.Forms.TextBox warehouseCountCB;
+    private System.Windows.Forms.TextBox warehouseCountTextBox;
     private System.Windows.Forms.Label label4;
     private System.Windows.Forms.ComboBox warehouseGoodCB;
     private System.Windows.Forms.Label label3;
