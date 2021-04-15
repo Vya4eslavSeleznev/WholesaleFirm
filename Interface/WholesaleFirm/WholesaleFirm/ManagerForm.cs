@@ -460,6 +460,7 @@ namespace WholesaleFirm
 
         setData(saleQuery(), salesDGV);
         addCheckBoxInDataGrid("Select to delete", salesDGV);
+        setData(topGoods(), top5goodsDGV);
       }
     }
 

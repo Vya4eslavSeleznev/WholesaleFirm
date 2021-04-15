@@ -67,7 +67,6 @@ namespace WholesaleFirm
       this.salesDGV = new System.Windows.Forms.DataGridView();
       this.tabPage4 = new System.Windows.Forms.TabPage();
       this.groupBox5 = new System.Windows.Forms.GroupBox();
-      this.groupBox6 = new System.Windows.Forms.GroupBox();
       this.top5goodsDGV = new System.Windows.Forms.DataGridView();
       this.tabControl1.SuspendLayout();
       this.tabPage1.SuspendLayout();
@@ -451,7 +450,6 @@ namespace WholesaleFirm
       // 
       // tabPage4
       // 
-      this.tabPage4.Controls.Add(this.groupBox6);
       this.tabPage4.Controls.Add(this.groupBox5);
       this.tabPage4.Location = new System.Drawing.Point(4, 25);
       this.tabPage4.Name = "tabPage4";
@@ -463,30 +461,21 @@ namespace WholesaleFirm
       // groupBox5
       // 
       this.groupBox5.Controls.Add(this.top5goodsDGV);
-      this.groupBox5.Location = new System.Drawing.Point(4, 2);
+      this.groupBox5.Location = new System.Drawing.Point(110, 24);
       this.groupBox5.Name = "groupBox5";
-      this.groupBox5.Size = new System.Drawing.Size(461, 539);
+      this.groupBox5.Size = new System.Drawing.Size(676, 475);
       this.groupBox5.TabIndex = 0;
       this.groupBox5.TabStop = false;
       this.groupBox5.Text = "Top 5 goods";
       // 
-      // groupBox6
-      // 
-      this.groupBox6.Location = new System.Drawing.Point(471, 0);
-      this.groupBox6.Name = "groupBox6";
-      this.groupBox6.Size = new System.Drawing.Size(449, 539);
-      this.groupBox6.TabIndex = 1;
-      this.groupBox6.TabStop = false;
-      this.groupBox6.Text = "groupBox6";
-      // 
       // top5goodsDGV
       // 
       this.top5goodsDGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-      this.top5goodsDGV.Location = new System.Drawing.Point(6, 21);
+      this.top5goodsDGV.Location = new System.Drawing.Point(65, 60);
       this.top5goodsDGV.Name = "top5goodsDGV";
       this.top5goodsDGV.RowHeadersWidth = 51;
       this.top5goodsDGV.RowTemplate.Height = 24;
-      this.top5goodsDGV.Size = new System.Drawing.Size(449, 509);
+      this.top5goodsDGV.Size = new System.Drawing.Size(544, 355);
       this.top5goodsDGV.TabIndex = 0;
       // 
       // ManagerForm
@@ -561,7 +550,6 @@ namespace WholesaleFirm
     private System.Windows.Forms.Button deleteGoodsButton;
     private System.Windows.Forms.Button deleteWarehouse2Button;
     private System.Windows.Forms.Button deleteWarehouse1Button;
-    private System.Windows.Forms.GroupBox groupBox6;
     private System.Windows.Forms.GroupBox groupBox5;
     private System.Windows.Forms.DataGridView top5goodsDGV;
   }
