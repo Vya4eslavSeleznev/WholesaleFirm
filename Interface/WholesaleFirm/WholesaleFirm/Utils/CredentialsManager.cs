@@ -15,7 +15,7 @@ namespace WholesaleFirm.Utils
       var hashedPassword = HashPasswordInternal(rawPassword, salt);
 
       return new PasswordSaltPair(Convert.ToBase64String(hashedPassword), Convert.ToBase64String(salt));
-    }
+    } 
 
     public bool VerifyHashedPassword(PasswordSaltPair existingPair, string rawPassword)
     {

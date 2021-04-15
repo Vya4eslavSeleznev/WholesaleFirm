@@ -19,11 +19,11 @@ namespace WholesaleFirm
     OracleConnection conn = new OracleConnection("Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)" +
       "(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=xe)));User Id=c##test;Password=MyPass");
 
-    //private Form authentication;
+    private Form authentication;
 
-    public ManagerForm()//Form authentication)
+    public ManagerForm(Form authentication)
     {
-      //this.authentication = authentication;
+      this.authentication = authentication;
       InitializeComponent();
 
       try
@@ -47,11 +47,13 @@ namespace WholesaleFirm
       setDataIntoGoodComboboxes(saleGoodCB);
       typeOfWarehouseCB.Items.Add("First warehouse");
       typeOfWarehouseCB.Items.Add("Second warehouse");
+      setData(topGoods(), top5goodsDGV);
     }
 
     private void ManagerForm_FormClosing(object sender, FormClosingEventArgs e)
     {
       conn.Close();
+      authentication.Visible = true;
     }
 
     private void setData(string query, DataGridView dgv)
@@ -241,6 +243,7 @@ namespace WholesaleFirm
       addCheckBoxInDataGrid("Select to delete", warehouse1DGV);
       addCheckBoxInDataGrid("Select to delete", warehouse2DGV);
       addCheckBoxInDataGrid("Select to delete", salesDGV);
+      setData(topGoods(), top5goodsDGV);
     }
 
     public IList<WarehouseGood> CalculateWarehouseGoodsToUpdate(IEnumerable<WarehouseGood> goods, int count)
@@ -375,6 +378,7 @@ namespace WholesaleFirm
     private void deleteSalesButton_Click(object sender, EventArgs e)
     {
       deleteRecord(salesDGV, "ID", "Incorrect sale!", "Sales", "SALES", saleQuery());
+      setData(topGoods(), top5goodsDGV);
     }
 
     private void deleteGoodsButton_Click(object sender, EventArgs e)
@@ -457,6 +461,21 @@ namespace WholesaleFirm
         setData(saleQuery(), salesDGV);
         addCheckBoxInDataGrid("Select to delete", salesDGV);
       }
+    }
+
+    private string topGoods()
+    {
+      return
+        "SELECT * " +
+        "FROM " +
+        "(" +
+        "SELECT SALES.GOOD_ID, GOODS.NAME, SUM(GOOD_COUNT) AS GOOD_COUNT " +
+        "FROM SALES " +
+        "JOIN GOODS ON SALES.GOOD_ID = GOODS.ID " +
+        "GROUP BY SALES.GOOD_ID, GOODS.NAME " +
+        "ORDER BY GOOD_COUNT DESC" +
+        ") " +
+        "WHERE ROWNUM <= 5";
     }
   }
 }

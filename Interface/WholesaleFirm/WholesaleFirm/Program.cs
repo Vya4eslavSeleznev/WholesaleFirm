@@ -16,8 +16,8 @@ namespace WholesaleFirm
     {
       Application.EnableVisualStyles();
       Application.SetCompatibleTextRenderingDefault(false);
-      Application.Run(new ManagerForm());
-      //Application.Run(new Authentication());
+      //Aplication.Run(new ManagerForm());
+      Application.Run(new Authentication());
     }
   }
 }

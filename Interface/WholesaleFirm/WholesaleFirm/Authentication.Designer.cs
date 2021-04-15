@@ -92,6 +92,7 @@ namespace WholesaleFirm
       this.Name = "Authentication";
       this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
       this.Text = "Authentication";
+      this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Authentication_FormClosing);
       this.ResumeLayout(false);
       this.PerformLayout();
 

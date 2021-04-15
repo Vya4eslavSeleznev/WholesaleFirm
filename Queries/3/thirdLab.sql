@@ -167,7 +167,7 @@ CLEAR SCREEN;
 --1. Создать триггер, который не позволяет добавить заявку на товар, число
 --которого на обоих складах меньше указанного в заявке. 
     CREATE TRIGGER CHECK_COUNT_OF_GOODS
-    BEFORE INSERT 
+    BEFORE INSERT OR UPDATE
         ON SALES
         FOR EACH ROW
         

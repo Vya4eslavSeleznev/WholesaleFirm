@@ -22,6 +22,16 @@ namespace WholesaleFirm
       this.conn = new OracleConnection("Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)" +
       "(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=xe)));User Id=c##test;Password=MyPass");
 
+      try
+      {
+        conn.Open();
+      }
+      catch
+      {
+        MessageBox.Show("Server closed!");
+        return;
+      }
+
       InitializeComponent();
     }
 
@@ -54,6 +64,16 @@ namespace WholesaleFirm
         return;
       }
 
+      //var credentialsManager = new CredentialsManager();
+      //var pair = credentialsManager.HashPassword("pwd");
+
+      //var query = $"INSERT INTO AUTHENTICATION (LOGIN, PASSWORD, SALT) VALUES ('login', '{pair.Password}', '{pair.Salt}')";
+
+      //using (var command = new OracleCommand(query, conn))
+      //{
+      //  command.ExecuteNonQuery();
+      //}
+
       try
       {
         var passwordSaltPair = GetOldPasswordSaltPair(login);
@@ -62,19 +82,24 @@ namespace WholesaleFirm
         if (!credentialsManager.VerifyHashedPassword(passwordSaltPair, password))
           throw new InvalidCredentialsException();
 
-          /*var manager = new ManagerForm(this);
-          manager.Show();
-          Visible = false;*/
+        var manager = new ManagerForm(this);
+        manager.Show();
+        Visible = false;
       }
       catch (InvalidCredentialsException ex)
       {
         MessageBox.Show(ex.Message, "Authentication", MessageBoxButtons.OK);
         return;
       }
-      catch
+      catch (Exception ex)
       {
         MessageBox.Show("Incorrect parameters!", "Authentication", MessageBoxButtons.OK);
       }
+    }
+
+    private void Authentication_FormClosing(object sender, FormClosingEventArgs e)
+    {
+      conn.Close();
     }
   }
 }
