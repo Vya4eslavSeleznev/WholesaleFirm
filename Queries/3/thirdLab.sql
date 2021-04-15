@@ -314,6 +314,10 @@ CLEAR SCREEN;
             RES := RES - LAST_SUM;
         END IF;
         
+        IF RES < 0 THEN
+            RES := 0;
+        END IF;
+        
         RESULT := RES;
     END;
     
