@@ -62,9 +62,9 @@ namespace WholesaleFirm
         if (!credentialsManager.VerifyHashedPassword(passwordSaltPair, password))
           throw new InvalidCredentialsException();
 
-          var manager = new ManagerForm(this);
+          /*var manager = new ManagerForm(this);
           manager.Show();
-          Visible = false;
+          Visible = false;*/
       }
       catch (InvalidCredentialsException ex)
       {

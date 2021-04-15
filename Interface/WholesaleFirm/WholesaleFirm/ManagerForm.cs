@@ -18,11 +18,11 @@ namespace WholesaleFirm
     OracleConnection conn = new OracleConnection("Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)" +
       "(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=xe)));User Id=c##test;Password=MyPass");
 
-    private Form authentication;
+    //private Form authentication;
 
-    public ManagerForm(Form authentication)
+    public ManagerForm()//Form authentication)
     {
-      this.authentication = authentication;
+      //this.authentication = authentication;
       InitializeComponent();
 
       try
@@ -339,15 +339,15 @@ namespace WholesaleFirm
         {
           MessageBox.Show("Incorrect parameters!", "Good", MessageBoxButtons.OK);
         }
-      }
 
-      setData(goodQuery(), goodDGV);
-      addCheckBoxInDataGrid("Select to delete", goodDGV);
-      RefreshCombobox(warehouseGoodCB);
-      RefreshCombobox(saleGoodCB);
-      setData(warehouseQuery("WAREHOUSE1"), warehouse1DGV);
-      setData(warehouseQuery("WAREHOUSE2"), warehouse2DGV);
-      setData(saleQuery(), salesDGV);
+        setData(goodQuery(), goodDGV);
+        addCheckBoxInDataGrid("Select to delete", goodDGV);
+        RefreshCombobox(warehouseGoodCB);
+        RefreshCombobox(saleGoodCB);
+        setData(warehouseQuery("WAREHOUSE1"), warehouse1DGV);
+        setData(warehouseQuery("WAREHOUSE2"), warehouse2DGV);
+        setData(saleQuery(), salesDGV);
+      }
     }
 
     private void deleteWarehouse1Button_Click(object sender, EventArgs e)
@@ -381,10 +381,10 @@ namespace WholesaleFirm
         {
           MessageBox.Show("Incorrect parameters!", "Sales", MessageBoxButtons.OK);
         }
-      }
 
-      setData(saleQuery(), salesDGV);
-      addCheckBoxInDataGrid("Select to delete", salesDGV);
+        setData(saleQuery(), salesDGV);
+        addCheckBoxInDataGrid("Select to delete", salesDGV);
+      }
     }
   }
 }
