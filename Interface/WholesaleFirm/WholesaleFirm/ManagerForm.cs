@@ -219,7 +219,7 @@ namespace WholesaleFirm
       {
         command.ExecuteNonQuery();
       }
-      catch
+      catch (Exception ex)
       {
         MessageBox.Show("Not enough goods!");
         return;

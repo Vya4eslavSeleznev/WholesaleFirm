@@ -48,13 +48,41 @@ namespace WholesaleFirm
 
     private void setDataInCB()
     {
+      var goodId = GetGoodId();
+      
       OracleCommand cmd = new OracleCommand("SELECT ID, NAME, PRIORITY FROM GOODS", conn);
       OracleDataReader dr = cmd.ExecuteReader();
 
+      var index = 0;
+      var goodIndex = 0;
+
       while (dr.Read())
       {
-        saleGoodCB.Items.Add(new Model.Good(dr.GetInt32(0), dr.GetString(1), dr.GetInt32(2)));
+        var id = dr.GetInt32(0);
+
+        if (goodId == id)
+          goodIndex = index;
+
+        index++;
+
+        saleGoodCB.Items.Add(new Model.Good(id, dr.GetString(1), dr.GetInt32(2)));
       }
+
+      saleGoodCB.SelectedIndex = goodIndex;
+    }
+
+    private int GetGoodId()
+    {
+      var query = $"SELECT GOOD_ID FROM SALES WHERE ID={this.saleId}";
+
+      using (var command = new OracleCommand(query, conn))
+      using (var reader = command.ExecuteReader())
+      {
+        while (reader.Read())
+          return reader.GetInt32(0);
+      }
+
+      throw new Exception("Good was not found");
     }
 
     private void editSaleButton_Click(object sender, EventArgs e)
