@@ -277,7 +277,7 @@ CLEAR SCREEN;
  --Курсор
  
     CREATE OR REPLACE PROCEDURE DIAGRAM_FOR_GOOD
-    (DATE1 IN TIMESTAMP, ID_GOOD IN NUMBER)
+    (DATE1 IN TIMESTAMP, ID_GOOD IN NUMBER, RESULT OUT DOUBLE PRECISION)
     IS
         CURSOR GET_DATA IS
             SELECT CREATE_DATE, SUM(GOOD_COUNT) AS SM
@@ -298,13 +298,7 @@ CLEAR SCREEN;
         ROWNUM_COUNT := 0;
         LAST_SUM := 0;
         RES := 0;
-    
-        DBMS_OUTPUT.PUT_LINE('SUM_GOOD_COUNT=' || SUM_GOOD_COUNT);
-        DBMS_OUTPUT.PUT_LINE('ROWNUM_COUNT=' || ROWNUM_COUNT);
-        DBMS_OUTPUT.PUT_LINE('LAST_SUM=' || LAST_SUM);
-        DBMS_OUTPUT.PUT_LINE('RES=' || RES);
-        DBMS_OUTPUT.PUT_LINE('==================================');
-    
+        
         FOR CR IN GET_DATA
         LOOP
             ROWNUM_COUNT := ROWNUM_COUNT + 1;
@@ -312,26 +306,18 @@ CLEAR SCREEN;
             LAST_SUM := CR.SM;
         END LOOP;
         
-        DBMS_OUTPUT.PUT_LINE('SUM_GOOD_COUNT=' || SUM_GOOD_COUNT);
-        DBMS_OUTPUT.PUT_LINE('ROWNUM_COUNT=' || ROWNUM_COUNT);
-        DBMS_OUTPUT.PUT_LINE('LAST_SUM=' || LAST_SUM);
-        DBMS_OUTPUT.PUT_LINE('RES=' || RES);
-        DBMS_OUTPUT.PUT_LINE('==================================');
-        
         SUM_GOOD_COUNT := SUM_GOOD_COUNT - LAST_SUM;
         ROWNUM_COUNT := ROWNUM_COUNT - 1;
-        RES := SUM_GOOD_COUNT / ROWNUM_COUNT;
+            
+        IF ROWNUM_COUNT <> 0 THEN
+            RES := SUM_GOOD_COUNT / ROWNUM_COUNT;
+            RES := RES - LAST_SUM;
+        END IF;
         
-        RES := RES - LAST_SUM;
-        
-        DBMS_OUTPUT.PUT_LINE('SUM_GOOD_COUNT=' || SUM_GOOD_COUNT);
-        DBMS_OUTPUT.PUT_LINE('ROWNUM_COUNT=' || ROWNUM_COUNT);
-        DBMS_OUTPUT.PUT_LINE('LAST_SUM=' || LAST_SUM);
-        DBMS_OUTPUT.PUT_LINE('RES=' || RES);
-        DBMS_OUTPUT.PUT_LINE('==================================');
-        
-        --DBMS_OUTPUT.PUT_LINE('RES=' || RES);
+        RESULT := RES;
     END;
+    
+    DROP PROCEDURE DIAGRAM_FOR_GOOD;
 
 
 

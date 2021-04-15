@@ -37,9 +37,9 @@ namespace WholesaleFirm
       this.chartButton = new System.Windows.Forms.Button();
       this.chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
       this.groupBox1 = new System.Windows.Forms.GroupBox();
-      this.date = new System.Windows.Forms.DateTimePicker();
+      this.dateFromDTP = new System.Windows.Forms.DateTimePicker();
       this.label6 = new System.Windows.Forms.Label();
-      this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
+      this.dateToDTP = new System.Windows.Forms.DateTimePicker();
       this.label1 = new System.Windows.Forms.Label();
       ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
       this.groupBox1.SuspendLayout();
@@ -70,6 +70,7 @@ namespace WholesaleFirm
       this.chartButton.TabIndex = 15;
       this.chartButton.Text = "Show chart";
       this.chartButton.UseVisualStyleBackColor = true;
+      this.chartButton.Click += new System.EventHandler(this.chartButton_Click);
       // 
       // chart
       // 
@@ -81,7 +82,7 @@ namespace WholesaleFirm
       this.chart.Name = "chart";
       series1.ChartArea = "ChartArea1";
       series1.Legend = "Legend1";
-      series1.Name = "Series1";
+      series1.Name = "Forecast";
       this.chart.Series.Add(series1);
       this.chart.Size = new System.Drawing.Size(744, 321);
       this.chart.TabIndex = 16;
@@ -97,12 +98,12 @@ namespace WholesaleFirm
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "Demand chart";
       // 
-      // date
+      // dateFromDTP
       // 
-      this.date.Location = new System.Drawing.Point(519, 14);
-      this.date.Name = "date";
-      this.date.Size = new System.Drawing.Size(251, 22);
-      this.date.TabIndex = 19;
+      this.dateFromDTP.Location = new System.Drawing.Point(519, 14);
+      this.dateFromDTP.Name = "dateFromDTP";
+      this.dateFromDTP.Size = new System.Drawing.Size(251, 22);
+      this.dateFromDTP.TabIndex = 19;
       // 
       // label6
       // 
@@ -113,12 +114,12 @@ namespace WholesaleFirm
       this.label6.TabIndex = 18;
       this.label6.Text = "Date from:";
       // 
-      // dateTimePicker1
+      // dateToDTP
       // 
-      this.dateTimePicker1.Location = new System.Drawing.Point(113, 54);
-      this.dateTimePicker1.Name = "dateTimePicker1";
-      this.dateTimePicker1.Size = new System.Drawing.Size(257, 22);
-      this.dateTimePicker1.TabIndex = 21;
+      this.dateToDTP.Location = new System.Drawing.Point(113, 54);
+      this.dateToDTP.Name = "dateToDTP";
+      this.dateToDTP.Size = new System.Drawing.Size(257, 22);
+      this.dateToDTP.TabIndex = 21;
       // 
       // label1
       // 
@@ -134,9 +135,9 @@ namespace WholesaleFirm
       this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(800, 450);
-      this.Controls.Add(this.dateTimePicker1);
+      this.Controls.Add(this.dateToDTP);
       this.Controls.Add(this.label1);
-      this.Controls.Add(this.date);
+      this.Controls.Add(this.dateFromDTP);
       this.Controls.Add(this.label6);
       this.Controls.Add(this.groupBox1);
       this.Controls.Add(this.chartButton);
@@ -159,9 +160,9 @@ namespace WholesaleFirm
     private System.Windows.Forms.Button chartButton;
     private System.Windows.Forms.DataVisualization.Charting.Chart chart;
     private System.Windows.Forms.GroupBox groupBox1;
-    private System.Windows.Forms.DateTimePicker date;
+    private System.Windows.Forms.DateTimePicker dateFromDTP;
     private System.Windows.Forms.Label label6;
-    private System.Windows.Forms.DateTimePicker dateTimePicker1;
+    private System.Windows.Forms.DateTimePicker dateToDTP;
     private System.Windows.Forms.Label label1;
   }
 }
