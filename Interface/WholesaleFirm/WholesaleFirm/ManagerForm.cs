@@ -18,8 +18,11 @@ namespace WholesaleFirm
     OracleConnection conn = new OracleConnection("Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)" +
       "(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=xe)));User Id=c##test;Password=MyPass");
 
-    public ManagerForm()
+    private Form authentication;
+
+    public ManagerForm(Form authentication)
     {
+      this.authentication = authentication;
       InitializeComponent();
 
       try
