@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Oracle.ManagedDataAccess.Client;
-using System.Configuration;
 using WholesaleFirm.Helper;
 using WholesaleFirm.Model;
 
@@ -461,6 +456,10 @@ namespace WholesaleFirm
         setData(saleQuery(), salesDGV);
         addCheckBoxInDataGrid("Select to delete", salesDGV);
         setData(topGoods(), top5goodsDGV);
+        setData(warehouseQuery("WAREHOUSE1"), warehouse1DGV);
+        setData(warehouseQuery("WAREHOUSE2"), warehouse2DGV);
+        addCheckBoxInDataGrid("Select to delete", warehouse1DGV);
+        addCheckBoxInDataGrid("Select to delete", warehouse2DGV);
       }
     }
 

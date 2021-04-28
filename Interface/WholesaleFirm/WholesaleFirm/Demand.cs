@@ -11,6 +11,7 @@ using Oracle.ManagedDataAccess.Client;
 using WholesaleFirm.Helper;
 using Oracle.ManagedDataAccess.Client;
 using Oracle.ManagedDataAccess.Types;
+using WholesaleFirm.Model;
 
 namespace WholesaleFirm
 {
@@ -47,8 +48,6 @@ namespace WholesaleFirm
       var startDate = dateFromDTP.Value.Date;
       var endDate = dateToDTP.Value.Date;
       int goodId = Helpers.GetSelectedId(goodCB);
-
-      var result = new List<decimal>();
 
       chart.Series["Forecast"].Points.Clear();
 
@@ -125,12 +124,18 @@ namespace WholesaleFirm
 
           var reader = command.ExecuteReader();
 
+          var result = new List<ChartData>();
+
           while (reader.Read())
           {
-            var date = reader.GetDateTime(0);
-            var count = reader.GetInt32(1);
+            result.Add(new ChartData(reader.GetDateTime(0), reader.GetInt32(1)));
+          }
 
-            //CHART
+          result.Add(new ChartData(endDate.AddDays(1), ((OracleDecimal)command.Parameters["RESULT"].Value).Value));
+
+          foreach(var item in result)
+          {
+            chart.Series["Forecast"].Points.AddXY(item.Date.ToString("dd.MM.yy"), item.Count);
           }
         }
         catch (Exception ex)

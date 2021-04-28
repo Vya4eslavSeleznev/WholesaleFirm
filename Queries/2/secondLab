@@ -9,7 +9,7 @@ CLEAR SCREEN;
 --2. Посчитать количество товаров в заявках за заданную дату. 
     SELECT SUM(GOOD_COUNT)
     FROM SALES
-    WHERE CREATE_DATE = TO_DATE('09-02-21', 'dd-mm-yy')
+    WHERE CREATE_DATE = TO_DATE('20-01-01', 'dd-mm-yy')
     
 --3. Вывести все заявки на товары с приоритетом меньше заданного.
     SELECT GOODS.NAME, SALES.GOOD_COUNT, GOODS.PRIORITY, SALES.CREATE_DATE
@@ -91,7 +91,7 @@ CLEAR SCREEN;
     DECLARE 
         WAREHOUSE1_COUNT NUMBER;
         WAREHOUSE2_COUNT NUMBER;
-        MAX_COUNT NUMBER := 5000;
+        MAX_COUNT NUMBER := 50000;
             
     BEGIN
         INSERT INTO GOODS(NAME, PRIORITY)
@@ -143,7 +143,7 @@ CLEAR SCREEN;
         SELECT ID
         INTO GOOD_ID_FOR_DELETE
         FROM GOODS
-        WHERE NAME = 'TEST1';
+        WHERE NAME = 'TestUI';
     
         DELETE FROM SALES
         WHERE GOOD_ID = GOOD_ID_FOR_DELETE;
@@ -181,7 +181,7 @@ CLEAR SCREEN;
 --на этом складе меньше 5, недостающее число списать со второго склада.
     SET SERVEROUTPUT ON;
     DECLARE 
-        GOOD_NAME VARCHAR2(50 BYTE) := 'Milk';
+        GOOD_NAME VARCHAR2(50 BYTE) := 'tmp';
         GOOD_ID_FOR_UPDATE NUMBER;
         WAREHOUSE1_COUNT NUMBER;
         WAREHOUSE2_COUNT NUMBER;

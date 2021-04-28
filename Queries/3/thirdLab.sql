@@ -93,7 +93,7 @@ CLEAR SCREEN;
     END;
     
     SET SERVEROUTPUT ON;
-    EXECUTE COUNT_GOODS_BY_DATE('09-02-21 00:00');
+    EXECUTE COUNT_GOODS_BY_DATE('24-01-01 00:00');
     
     DROP PROCEDURE COUNT_GOODS_BY_DATE;
 
@@ -117,9 +117,6 @@ CLEAR SCREEN;
             WHERE GOOD_ID = GOOD_ID2
             GROUP BY GOOD_ID, CREATE_DATE;
     
-        TOTAL1 NUMBER;
-        TOTAL2 NUMBER;
-    
     BEGIN
         FOR FIRST IN DEMAND_CURSOR1
         LOOP
@@ -132,6 +129,8 @@ CLEAR SCREEN;
             END LOOP;
         END LOOP;
     END;
+    
+    EXECUTE DEMAND_FOR_GOOD(1, 2);
     
 --4. —оздать хранимую процедуру с входными параметрами, задающими интервал
 --времени, и выходным Ц идентификатором товара. ѕроцедура должна возвращать
@@ -162,6 +161,11 @@ CLEAR SCREEN;
         END LOOP;
         CLOSE DEMAND_CURSOR;
     END;
+    
+    SET SERVEROUTPUT ON;
+    DECLARE TEST_ID NUMBER;
+    EXECUTE DEMAND_FOR_GOOD_BY_DATE('', '', TEST_ID);
+    DBMS_OUTPUT.PUT_LINE(TEST_ID);
     
 --“риггера
 --1. —оздать триггер, который не позвол€ет добавить за€вку на товар, число
@@ -200,6 +204,9 @@ CLEAR SCREEN;
         END IF;
     END;
     
+    INSERT INTO SALES(GOOD_ID, GOOD_COUNT, CREATE_DATE)
+    VALUES(62, 444, '20-01-21')
+    
     DROP TRIGGER CHECK_COUNT_OF_GOODS;
     
 --2. —оздать триггер, который не позвол€ет добавить за€вку c числом товара меньше 1.
@@ -213,6 +220,9 @@ CLEAR SCREEN;
             RAISE_APPLICATION_ERROR(-20000, 'Not enough goods');        
         END IF;
     END;
+    
+    INSERT INTO SALES(GOOD_ID, GOOD_COUNT, CREATE_DATE)
+    VALUES(62, 0, '20-01-21')
     
     DROP TRIGGER CHECK_EMPTY_SALE;
     
@@ -236,6 +246,10 @@ CLEAR SCREEN;
             RAISE_APPLICATION_ERROR(-20000, 'TEST MESSAGE'); 
         END IF;
     END;
+    
+    UPDATE WAREHOUSE2
+    SET GOOD_COUNT = 8888
+    WHERE GOOD_ID = 1
     
     DROP TRIGGER UPDATE_WAREHOUSE;
     
@@ -272,54 +286,119 @@ CLEAR SCREEN;
         END IF;
     END;
     
+    DELETE FROM GOODS
+    WHERE ID = 1
+    
     DROP TRIGGER CHECK_FOREIGN_KEY;
 
  -- урсор
+ --Ќеобходимо реализовать хранимую процедуру, рассчитывающую прогнозируемый
+ --спрос на 7 дней на некоторый товар. ’ранима€ процедура должна иметь два входных
+ --параметра, задающие интервал времени дл€ анализа изменени€ спроса, и параметр,
+ --задающий анализируемый товар.ѕредлагаемый алгоритм: с помощью курсора формируем
+ --временную таблицу, содержащую номер дн€ в рассматриваемом интервале и число хран€щегос€
+ --товара. ћаксимальный номер сохран€ем в переменной. ќрганизуем курсор, перебирающий
+ --последовательно строки временной таблицы, упор€доченные по номеру точки, и
+ --усредн€ющий попарно соседние точки (за каждую итерацию точек становитс€ на 1 меньше).
+ --ѕолученное среднее значение каждой пары, замен€ет значение минимальной по номеру точки.
+ --ѕоследн€€ точка удал€етс€. –абота курсора повтор€етс€ до тех пор, пока в таблице
+ --не останетс€ 2 точки. Ѕудем считать, что разница спроса в этих двух точках равна разнице
+ --спроса между прогнозируемым на следующий день спросом и спросом на заданный товар последнего дн€.
+ --“аким образом, мы можем получить величину прогнозируемого спроса 
  
     CREATE OR REPLACE PROCEDURE DIAGRAM_FOR_GOOD
-    (DATE1 IN TIMESTAMP, ID_GOOD IN NUMBER, RESULT OUT DOUBLE PRECISION)
+    (DATE_FROM IN TIMESTAMP, DATE_TO IN TIMESTAMP, ID_GOOD IN NUMBER, RESULT OUT DOUBLE PRECISION, DATA_CURSOR OUT SYS_REFCURSOR)
     IS
         CURSOR GET_DATA IS
             SELECT CREATE_DATE, SUM(GOOD_COUNT) AS SM
             FROM SALES
-            WHERE CREATE_DATE >= DATE1 AND 
-            CREATE_DATE <= (CREATE_DATE + INTERVAL '7' DAY)
+            WHERE CREATE_DATE >= DATE_FROM AND 
+            CREATE_DATE <= DATE_TO--(CREATE_DATE + INTERVAL '7' DAY)
             AND GOOD_ID = ID_GOOD
             GROUP BY CREATE_DATE
             ORDER BY CREATE_DATE;
     
-    SUM_GOOD_COUNT NUMBER;
+    --SUM_GOOD_COUNT NUMBER;
     ROWNUM_COUNT NUMBER;
+    CURRENT_ROWNUM NUMBER;
     LAST_SUM NUMBER;
-    RES DOUBLE PRECISION;
+    RES1 DOUBLE PRECISION;
+    RES2 DOUBLE PRECISION;
     
     BEGIN
-        SUM_GOOD_COUNT := 0;
+    
+        --SUM_GOOD_COUNT := 0;
         ROWNUM_COUNT := 0;
         LAST_SUM := 0;
-        RES := 0;
-        
+        RES1 := 0;
+        RES2 := 0;
+        CURRENT_ROWNUM := 0;
+    
         FOR CR IN GET_DATA
         LOOP
             ROWNUM_COUNT := ROWNUM_COUNT + 1;
-            SUM_GOOD_COUNT := SUM_GOOD_COUNT + CR.SM;
-            LAST_SUM := CR.SM;
+            --SUM_GOOD_COUNT := SUM_GOOD_COUNT + CR.SM;
+            --LAST_SUM := CR.SM;
         END LOOP;
         
-        SUM_GOOD_COUNT := SUM_GOOD_COUNT - LAST_SUM;
-        ROWNUM_COUNT := ROWNUM_COUNT - 1;
+        FOR CR IN GET_DATA
+        LOOP
+            IF CURRENT_ROWNUM < ROWNUM_COUNT - 2 THEN
+                RES1 := RES1 + CR.SM;
+            ELSE
+                RES2 := RES2 + CR.SM;
+            END IF;
             
-        IF ROWNUM_COUNT <> 0 THEN
-            RES := SUM_GOOD_COUNT / ROWNUM_COUNT;
-            RES := RES - LAST_SUM;
+            CURRENT_ROWNUM := CURRENT_ROWNUM + 1;
+        END LOOP;
+        
+        IF ROWNUM_COUNT > 2 THEN
+            RES1 := RES1 / (ROWNUM_COUNT - 2);
+            RES2 := RES2 / 2;
         END IF;
         
-        IF RES < 0 THEN
-            RES := 0;
+        IF RES1 > RES2 THEN
+            RES1 := RES1 - RES2;
+        ELSE
+            RES1 := RES2 - RES1;
         END IF;
         
-        RESULT := RES;
+        CURRENT_ROWNUM := 0;
+        
+        FOR CR IN GET_DATA
+        LOOP
+            IF CURRENT_ROWNUM = ROWNUM_COUNT - 1 THEN
+                LAST_SUM := CR.SM;
+            END IF;
+        END LOOP;
+        
+        --SUM_GOOD_COUNT := SUM_GOOD_COUNT - LAST_SUM;
+        --ROWNUM_COUNT := ROWNUM_COUNT - 1;
+            
+        --IF ROWNUM_COUNT <> 0 THEN
+        --    RES := SUM_GOOD_COUNT / ROWNUM_COUNT;
+        --    RES := RES - LAST_SUM;
+        --END IF;
+        
+        --IF RES < 0 THEN
+        --    RES := 0;
+        --END IF;
+        
+        RESULT := RES1 + LAST_SUM;
+    IF NOT DATA_CURSOR%ISOPEN THEN
+
+    OPEN DATA_CURSOR FOR
+		SELECT CREATE_DATE, SUM(GOOD_COUNT) AS SM
+        FROM SALES
+        WHERE CREATE_DATE >= DATE_FROM AND 
+        CREATE_DATE <= DATE_TO--(CREATE_DATE + INTERVAL '7' DAY)
+        AND GOOD_ID = ID_GOOD
+        GROUP BY CREATE_DATE
+        ORDER BY CREATE_DATE;
+    END IF;
     END;
+    
+    --DROP PROCEDURE DIAGRAM_FOR_GOOD;
     
     DROP PROCEDURE DIAGRAM_FOR_GOOD;
 

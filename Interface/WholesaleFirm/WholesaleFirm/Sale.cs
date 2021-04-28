@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Oracle.ManagedDataAccess.Client;
 using WholesaleFirm.Helper;
+using WholesaleFirm.Model;
 
 namespace WholesaleFirm
 {
@@ -110,7 +111,73 @@ namespace WholesaleFirm
       command.Parameters.Add(new OracleParameter("dt", date));
       command.ExecuteNonQuery();
 
+      var warehouse1 = GetGoods(1, goodId);
+      var warehouse2 = GetGoods(2, goodId);
+      var updates = CalculateWarehouseGoodsToUpdate(warehouse1.Concat(warehouse2), count);
+
+      UpdateWarehouseGoods(updates);
+
       MessageBox.Show("The sale was successfully updated!");
+    }
+
+    public IList<WarehouseGood> CalculateWarehouseGoodsToUpdate(IEnumerable<WarehouseGood> goods, int count)
+    {
+      var goodsToUpdate = new List<WarehouseGood>();
+
+      foreach (var good in goods)
+      {
+        goodsToUpdate.Add(good);
+
+        if (good.Count >= count)
+        {
+          good.Count -= count;
+          count = 0;
+          break;
+        }
+        else
+        {
+          count -= good.Count;
+          good.Count = 0;
+        }
+      }
+
+      if (count > 0)
+        throw new Exception("Invalid count");
+
+      return goodsToUpdate;
+    }
+
+    public void UpdateWarehouseGoods(IEnumerable<WarehouseGood> goods)
+    {
+      foreach (var good in goods)
+      {
+        var query = good.Count > 0
+          ? $"UPDATE WAREHOUSE{good.WarehouseId} SET GOOD_COUNT={good.Count} WHERE ID={good.Id}"
+          : $"DELETE FROM WAREHOUSE{good.WarehouseId} WHERE ID={good.Id}";
+
+        using (var command = new OracleCommand(query, conn))
+        {
+          command.ExecuteNonQuery();
+        }
+      }
+    }
+
+    public IEnumerable<WarehouseGood> GetGoods(int warehouseId, int goodId)
+    {
+      var result = new List<WarehouseGood>();
+
+      var query = $"SELECT ID, GOOD_COUNT FROM WAREHOUSE{warehouseId} WHERE GOOD_ID={goodId}";
+
+      using (var command = new OracleCommand(query, conn))
+      using (var reader = command.ExecuteReader())
+      {
+        while (reader.Read())
+        {
+          result.Add(new WarehouseGood(reader.GetInt32(0), reader.GetInt32(1), warehouseId));
+        }
+      }
+
+      return result;
     }
   }
 }
