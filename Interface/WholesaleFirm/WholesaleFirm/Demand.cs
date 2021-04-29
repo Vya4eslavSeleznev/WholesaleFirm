@@ -51,101 +51,72 @@ namespace WholesaleFirm
 
       chart.Series["Forecast"].Points.Clear();
 
-      //while (startDate <= endDate)
-      //{
-        string query = "DIAGRAM_FOR_GOOD";
+      try
+      {
+        var chartData = GetMainChartData(startDate, endDate, goodId);
+        chartData.Add(GetPredictedData(startDate, endDate, goodId));
 
-      /*using (var command = new OracleCommand(query, conn))
+        foreach (var item in chartData)
+        {
+          chart.Series["Forecast"].Points.AddXY(item.Date.ToString("dd.MM.yy"), item.Count);
+        }
+      }
+      catch (Exception ex)
+      {
+
+      }
+    }
+
+    private ChartData GetPredictedData(DateTime start, DateTime end, int goodId)
+    {
+      var query = "DIAGRAM_FOR_GOOD1";
+
+      using (var command = new OracleCommand(query, conn))
       {
         command.CommandType = CommandType.StoredProcedure;
-        command.Parameters.Add(new OracleParameter("dt1", startDate.ToString("dd.MM.yy")));
-        command.Parameters.Add(new OracleParameter("dt2", endDate.ToString("dd.MM.yy")));
+        command.Parameters.Add(new OracleParameter("dt1", start.ToString("dd.MM.yy")));
+        command.Parameters.Add(new OracleParameter("dt2", end.ToString("dd.MM.yy")));
         command.Parameters.Add(new OracleParameter("id", goodId));
 
         command.Parameters.Add(new OracleParameter("RESULT", OracleDbType.Double)
-        {
-          Direction = ParameterDirection.Output
-        });
-
-        command.Parameters.Add(new OracleParameter("DATA_CURSOR", OracleDbType.RefCursor)
         {
           Direction = ParameterDirection.Output
         });
 
         command.ExecuteNonQuery();
 
-        OracleDataAdapter da = new OracleDataAdapter(command);
-        DataTable dataTable = new DataTable();
-        da.Fill(dataTable);
+        return new ChartData(end.AddDays(1), ((OracleDecimal)command.Parameters["RESULT"].Value).Value);
+      }
+    }
 
-        //result.Add(((OracleDecimal)command.Parameters["RESULT"].Value).Value);
+    private ICollection<ChartData> GetMainChartData(DateTime start, DateTime end, int goodId)
+    {
+      var result = new List<ChartData>();
 
-        OracleDataReader reader = command.ExecuteReader();
-        while (reader.Read())
-        {
-          ///cmd.ExecuteNonQuery();
-
-          result.Add(((OracleDecimal)command.Parameters["RESULT"].Value).Value);
-
-        }
-
-
-
-        chart.Series["Forecast"].Points.AddXY(
-          startDate.ToString("dd.MM.yy"),
-          ((OracleDecimal)command.Parameters["RESULT"].Value).Value);
-      }*/
+      var query = $"SELECT CREATE_DATE, SUM(GOOD_COUNT) " +
+        $"FROM SALES " +
+        $"WHERE CREATE_DATE >= :dateFrom AND " +
+        $"CREATE_DATE <= :dateTo AND " +
+        $"GOOD_ID = :goodId " +
+        $"GROUP BY CREATE_DATE " +
+        $"ORDER BY CREATE_DATE";
 
       using (var command = new OracleCommand(query, conn))
       {
+        command.Parameters.Add(new OracleParameter("dateFrom", start.ToString("dd.MM.yy")));
+        command.Parameters.Add(new OracleParameter("dateTo", end.ToString("dd.MM.yy")));
+        command.Parameters.Add(new OracleParameter("goodId", goodId));
 
-        DataSet dataset = new DataSet();
-        
-        command.CommandType = CommandType.StoredProcedure;
-        command.Parameters.Add(new OracleParameter("dt1", startDate.ToString("dd.MM.yy")));
-        command.Parameters.Add(new OracleParameter("dt2", endDate.ToString("dd.MM.yy")));
-        command.Parameters.Add(new OracleParameter("id", goodId));
-
-        command.Parameters.Add(new OracleParameter("RESULT", OracleDbType.Double)
+        using (var reader = command.ExecuteReader())
         {
-          Direction = ParameterDirection.Output
-        });
-
-        command.Parameters.Add(new OracleParameter("DATA_CURSOR", OracleDbType.RefCursor)
-        {
-          Direction = ParameterDirection.Output
-        });
-
-        try
-        {
-          //command.ExecuteNonQuery();
-          //OracleDataAdapter da = new OracleDataAdapter(command);
-          //da.Fill(dataset);
-
-          var reader = command.ExecuteReader();
-
-          var result = new List<ChartData>();
-
-          while (reader.Read())
+          while(reader.Read())
           {
             result.Add(new ChartData(reader.GetDateTime(0), reader.GetInt32(1)));
           }
-
-          result.Add(new ChartData(endDate.AddDays(1), ((OracleDecimal)command.Parameters["RESULT"].Value).Value));
-
-          foreach(var item in result)
-          {
-            chart.Series["Forecast"].Points.AddXY(item.Date.ToString("dd.MM.yy"), item.Count);
-          }
         }
-        catch (Exception ex)
-        {
-          System.Console.WriteLine("Exception: {0}", ex.ToString());
-        }
+
+        return result;
       }
-
-      //  startDate = startDate.AddDays(1);
-      //}
     }
   }
 }

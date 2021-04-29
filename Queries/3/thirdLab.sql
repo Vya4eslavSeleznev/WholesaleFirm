@@ -306,39 +306,63 @@ CLEAR SCREEN;
  --спроса между прогнозируемым на следующий день спросом и спросом на заданный товар последнего дня.
  --Таким образом, мы можем получить величину прогнозируемого спроса 
  
+    CREATE GLOBAL TEMPORARY TABLE DEMAND_TABLE(DAY NUMBER, GOOD_COUNT NUMBER)
+    ON COMMIT DELETE ROWS;
+    
     CREATE OR REPLACE PROCEDURE DIAGRAM_FOR_GOOD
     (DATE_FROM IN TIMESTAMP, DATE_TO IN TIMESTAMP, ID_GOOD IN NUMBER, RESULT OUT DOUBLE PRECISION, DATA_CURSOR OUT SYS_REFCURSOR)
     IS
         CURSOR GET_DATA IS
-            SELECT CREATE_DATE, SUM(GOOD_COUNT) AS SM
-            FROM SALES
-            WHERE CREATE_DATE >= DATE_FROM AND 
-            CREATE_DATE <= DATE_TO--(CREATE_DATE + INTERVAL '7' DAY)
-            AND GOOD_ID = ID_GOOD
-            GROUP BY CREATE_DATE
-            ORDER BY CREATE_DATE;
+            SELECT DAY, GOOD_COUNT
+            FROM DEMAND_TABLE;
     
-    --SUM_GOOD_COUNT NUMBER;
     ROWNUM_COUNT NUMBER;
     CURRENT_ROWNUM NUMBER;
     LAST_SUM NUMBER;
     RES1 DOUBLE PRECISION;
     RES2 DOUBLE PRECISION;
     
-    BEGIN
+    MAX_GOOD_COUNT NUMBER;
     
-        --SUM_GOOD_COUNT := 0;
+    BEGIN
         ROWNUM_COUNT := 0;
         LAST_SUM := 0;
         RES1 := 0;
         RES2 := 0;
         CURRENT_ROWNUM := 0;
+        
+        SELECT MAX(SUM(GOOD_COUNT))
+        INTO MAX_GOOD_COUNT
+        FROM SALES WHERE GOOD_ID = ID_GOOD
+        GROUP BY CREATE_DATE;
+        
+        INSERT INTO DEMAND_TABLE
+            SELECT CREATE_DATE, SUM(GOOD_COUNT) AS SM
+            FROM SALES
+            WHERE CREATE_DATE >= DATE_FROM AND 
+            CREATE_DATE <= DATE_TO
+            AND GOOD_ID = ID_GOOD
+            GROUP BY CREATE_DATE
+            ORDER BY CREATE_DATE;
+        
+        FOR CR IN GET_DATA
+        LOOP
+            
+            
+            
+        END LOOP;
+    
+    
+    
+    
+    
+    
+    
+    
     
         FOR CR IN GET_DATA
         LOOP
             ROWNUM_COUNT := ROWNUM_COUNT + 1;
-            --SUM_GOOD_COUNT := SUM_GOOD_COUNT + CR.SM;
-            --LAST_SUM := CR.SM;
         END LOOP;
         
         FOR CR IN GET_DATA
@@ -372,18 +396,6 @@ CLEAR SCREEN;
             END IF;
         END LOOP;
         
-        --SUM_GOOD_COUNT := SUM_GOOD_COUNT - LAST_SUM;
-        --ROWNUM_COUNT := ROWNUM_COUNT - 1;
-            
-        --IF ROWNUM_COUNT <> 0 THEN
-        --    RES := SUM_GOOD_COUNT / ROWNUM_COUNT;
-        --    RES := RES - LAST_SUM;
-        --END IF;
-        
-        --IF RES < 0 THEN
-        --    RES := 0;
-        --END IF;
-        
         RESULT := RES1 + LAST_SUM;
     IF NOT DATA_CURSOR%ISOPEN THEN
 
@@ -391,14 +403,12 @@ CLEAR SCREEN;
 		SELECT CREATE_DATE, SUM(GOOD_COUNT) AS SM
         FROM SALES
         WHERE CREATE_DATE >= DATE_FROM AND 
-        CREATE_DATE <= DATE_TO--(CREATE_DATE + INTERVAL '7' DAY)
+        CREATE_DATE <= DATE_TO
         AND GOOD_ID = ID_GOOD
         GROUP BY CREATE_DATE
         ORDER BY CREATE_DATE;
     END IF;
     END;
-    
-    --DROP PROCEDURE DIAGRAM_FOR_GOOD;
     
     DROP PROCEDURE DIAGRAM_FOR_GOOD;
 
