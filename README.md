@@ -2,7 +2,7 @@
 
 ---
 
-![](https://github.com/Vya4eslavSeleznev/WholesaleFirm/docs/warehouse.gif)
+![Gif](https://github.com/Vya4eslavSeleznev/WholesaleFirm/blob/master/docs/warehouse.gif)
 
 ---
 
